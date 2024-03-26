@@ -1,6 +1,6 @@
 # smart-door-lock
 
-This the semester project for the 2nd semester of the master.
+This is the semester project for the 2nd semester of the master.
 
 ## Build and flash
 
