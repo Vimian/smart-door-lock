@@ -28,25 +28,25 @@ enum States {
 
 enum States state = INITIAL;
 
-bool isLocked = true;
-bool isOpened = false;
-bool isAlarm = false;
+bool is_locked = true;
+bool is_opened = false;
+bool is_alarm = false;
 
 bool locking = false;
 bool unlocking = false;
 bool opening = false;
 bool closing = false;
-int unlockTimer = 0;
+int unlock_timer = 0;
 
-bool openButton = false;
-bool lockButton = false;
+bool open_button = false;
+bool lock_button = false;
 
 void initial() {
-    if (isLocked && !isOpened) {
+    if (is_locked && !is_opened) {
         state = LOCKED;
-    } else if (!isLocked && !isOpened) {
+    } else if (!is_locked && !is_opened) {
         state = UNLOCKED;
-    } else if (isOpened) {
+    } else if (is_opened) {
         state = OPENED;
     }
 }
@@ -68,95 +68,95 @@ void unlocked() {
 }
 
 void opened() {
-    if (isLocked) {
-        isAlarm = true;
+    if (is_locked) {
+        is_alarm = true;
         state = ALARM;
-    } else if (!isLocked) {
+    } else if (!is_locked) {
         state = UNLOCKED;
     }
 }
 
-void funlocking() {
-    if (unlockTimer == 10 && !isOpened) {
+void func_unlocking() {
+    if (unlock_timer == 10 && !is_opened) {
         state = LOCKED;
-    } else if (unlockTimer < 10 && !isOpened) {
-        isAlarm = false;
-        isLocked = false;
+    } else if (unlock_timer < 10 && !is_opened) {
+        is_alarm = false;
+        is_locked = false;
         state = UNLOCKED;
-    } else if (isOpened) {
-        isAlarm = false;
-        isLocked = false;
+    } else if (is_opened) {
+        is_alarm = false;
+        is_locked = false;
         state = OPENED;
-    } else if (unlockTimer == 10 && isAlarm) {
+    } else if (unlock_timer == 10 && is_alarm) {
         state = ALARM;
-    } else if (unlockTimer == 10 && isOpened && !isAlarm) {
+    } else if (unlock_timer == 10 && is_opened && !is_alarm) {
         state = AUTOLOCK;
     }
 
-    unlockTimer++;
+    unlock_timer++;
 }
 
-void falarm() {
+void func_alarm() {
     if (unlocking) {
         state = UNLOCKING;
     }
 }
 
-void autoLock() {
+void auto_lock() {
     if (unlocking) {
         state = UNLOCKING;
-    } else if (closing && !isOpened) {
+    } else if (closing && !is_opened) {
         state = LOCKED;
     }
 }
 
-void TaskBlink (void *pvParameters) {
+void task_blink (void *pvParameters) {
     uint8_t alarm_state = 1;
 
     while (1) {
         //printf("Changing led state\n");
 
-        gpio_set_level(PIN_OPENED, isOpened ? 0 : 1);
-        gpio_set_level(PIN_LOCKED, isLocked ? 0 : 1);
+        gpio_set_level(PIN_OPENED, is_opened ? 0 : 1);
+        gpio_set_level(PIN_LOCKED, is_locked ? 0 : 1);
         gpio_set_level(PIN_ALARM, alarm_state);
         vTaskDelay(DELAY);
 
-        if (isAlarm || (!isAlarm && alarm_state == 0)) {
+        if (is_alarm || alarm_state == 0) {
             alarm_state = alarm_state == 0 ? 1 : 0;
         }
     }
 }
 
-void ListenToButtons (void *pvParameters) {
+void listen_to_buttons (void *pvParameters) {
     while (1) {
         //printf("Listening to buttons\n");
         
-        if (gpio_get_level(PIN_LOCK) == 0 && !lockButton) {
-            lockButton = true;
+        if (gpio_get_level(PIN_LOCK) == 0 && !lock_button) {
+            lock_button = true;
 
-            if (isLocked) {
+            if (is_locked) {
                 unlocking = true;
-                unlockTimer = 0;
+                unlock_timer = 0;
             } else {
                 locking = true;
-                isLocked = true;
+                is_locked = true;
             }
-        } else if (gpio_get_level(PIN_LOCK) == 1 && lockButton) {
-            lockButton = false;
+        } else if (gpio_get_level(PIN_LOCK) == 1 && lock_button) {
+            lock_button = false;
         }
 
-        if (gpio_get_level(PIN_OPEN) == 0 && !openButton) {
-            openButton = true;
+        if (gpio_get_level(PIN_OPEN) == 0 && !open_button) {
+            open_button = true;
 
-            if (isOpened) {
+            if (is_opened) {
                 closing = true;
-                isOpened = false;
+                is_opened = false;
             } else {
                 opening = true;
-                isOpened = true;
+                is_opened = true;
             }
-        } else if (gpio_get_level(PIN_OPEN) == 1 && openButton) {
-            openButton = false;
+        } else if (gpio_get_level(PIN_OPEN) == 1 && open_button) {
+            open_button = false;
         }
 
         vTaskDelay(10);
@@ -175,12 +175,12 @@ void app_main(void) {
     gpio_reset_pin(PIN_LOCK);
     gpio_set_direction(PIN_LOCK, GPIO_MODE_INPUT);
 
-    xTaskCreate(TaskBlink, "Blink", 4096, NULL, 1, NULL);
+    xTaskCreate(task_blink, "Blink", 4096, NULL, 1, NULL);
 
-    xTaskCreate(ListenToButtons, "Buttons", 4096, NULL, 1, NULL);
+    xTaskCreate(listen_to_buttons, "Buttons", 4096, NULL, 1, NULL);
 
     while (1) {
-        printf("{ State is: %d, isOpened: %d, isLocked: %d, isAlarm: %d }\n", state, isOpened, isLocked, isAlarm);
+        printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d }\n", state, is_opened, is_locked, is_alarm);
 
         switch (state) {
             case INITIAL:
@@ -201,14 +201,14 @@ void app_main(void) {
                 break;
             case UNLOCKING:
                 unlocking = false;
-                funlocking();
+                func_unlocking();
                 break;
             case ALARM:
-                falarm();
+                func_alarm();
                 break;
             case AUTOLOCK:
                 locking = false;
-                autoLock();
+                auto_lock();
                 break;
             default:
                 printf("Error state not defined!");
