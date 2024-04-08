@@ -132,13 +132,13 @@ void listen_to_analog (void *pvParameters) {
     while (1) {
         //printf("Listening to analog\n");
         int value = GPIO_NUM_32;
-        if (value == 0 || value <= 1000)
+        if (value == 0 || value <= 500)
         {
-            opening = true;
-            is_opened = true;
-        } else if (value == 4095 || value >= 3000){
             closing = true;
             is_opened = false;
+        } else if (value == 4095 || value >= 3595){
+            opening = true;
+            is_opened = true;
         }
         
 
@@ -199,6 +199,8 @@ void app_main(void) {
     xTaskCreate(listen_to_buttons, "Buttons", 4096, NULL, 1, NULL);
 
     xTaskCreate(listen_to_analog, "Analog", 4096, NULL, 1, NULL);
+
+    
 
     while (1) {
         printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d }\n", state, is_opened, is_locked, is_alarm);
