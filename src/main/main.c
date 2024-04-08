@@ -8,10 +8,11 @@
 #include "driver/gpio.h"
 #include "unistd.h"
 
+
 #define PIN_OPENED (15)
 #define PIN_LOCKED (2)
 #define PIN_ALARM (4)
-#define PIN_OPEN GPIO_NUM_18
+#define PIN_OPEN GPIO_NUM_32
 #define PIN_LOCK GPIO_NUM_19
 
 #define DELAY (500 / portTICK_PERIOD_MS)
@@ -127,6 +128,24 @@ void task_blink (void *pvParameters) {
     }
 }
 
+void listen_to_analog (void *pvParameters) {
+    while (1) {
+        //printf("Listening to analog\n");
+        int value = GPIO_NUM_32;
+        if (value == 0 || value <= 1000)
+        {
+            opening = true;
+            is_opened = true;
+        } else if (value == 4095 || value >= 3000){
+            closing = true;
+            is_opened = false;
+        }
+        
+
+        vTaskDelay(1000);
+    }
+}
+
 void listen_to_buttons (void *pvParameters) {
     while (1) {
         //printf("Listening to buttons\n");
@@ -178,6 +197,8 @@ void app_main(void) {
     xTaskCreate(task_blink, "Blink", 4096, NULL, 1, NULL);
 
     xTaskCreate(listen_to_buttons, "Buttons", 4096, NULL, 1, NULL);
+
+    xTaskCreate(listen_to_analog, "Analog", 4096, NULL, 1, NULL);
 
     while (1) {
         printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d }\n", state, is_opened, is_locked, is_alarm);
