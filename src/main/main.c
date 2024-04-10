@@ -132,17 +132,17 @@ void listen_to_analog (void *pvParameters) {
     while (1) {
         //printf("Listening to analog\n");
         int value = GPIO_NUM_32;
-        if (value == 0 || value <= 500)
+        if (gpio_get_level(PIN_OPEN) == 1 && value <= 2000)
         {
             closing = true;
             is_opened = false;
-        } else if (value == 4095 || value >= 3595){
+        } else {
             opening = true;
             is_opened = true;
         }
         
 
-        vTaskDelay(1000);
+        vTaskDelay(10);
     }
 }
 
