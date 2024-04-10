@@ -8,7 +8,6 @@
 #include "driver/gpio.h"
 #include "unistd.h"
 
-
 #define PIN_OPENED (15)
 #define PIN_LOCKED (2)
 #define PIN_ALARM (4)
