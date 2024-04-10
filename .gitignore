@@ -1,2 +1,9 @@
 */build/
 src/sdkconfig*
+report/main.synctex.gz
+report/main.pdf
+report/main.out
+report/main.log
+report/main.blg
+report/main.bbl
+report/main.aux
