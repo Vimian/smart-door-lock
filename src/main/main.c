@@ -173,7 +173,6 @@ void listen_to_buttons (void *pvParameters) {
 
 esp_bd_addr_t trusted_device;
 bool paired = false;
-char bt_addr;
 
 static char *bda2str(esp_bd_addr_t bda, char *str, size_t size) {
     if (bda == NULL || str == NULL || size < 18) {
@@ -297,9 +296,6 @@ void setup_bt() {
 
     esp_bt_dev_set_device_name("SmartDoorLock");
     esp_bt_gap_set_scan_mode(ESP_BT_CONNECTABLE, ESP_BT_GENERAL_DISCOVERABLE);
-
-    char bda_str[18] = {0};
-    bt_addr = bda2str(esp_bt_dev_get_address(), bda_str, sizeof(bda_str));
 }
 
 void app_main(void) {
@@ -324,7 +320,8 @@ void app_main(void) {
 
     while (1) {
         esp_bluedroid_status_t status = esp_bluedroid_get_status();
-        printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d, bt_connected: %d, bt_status: %d, ESP32_bt_addr: %d }\n", state, is_opened, is_locked, is_alarm, bt_connected, status, bt_addr);
+        char bda_str[18] = {0};
+        printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d, bt_connected: %d, bt_status: %d, ESP32_bt_addr: %s }\n", state, is_opened, is_locked, is_alarm, bt_connected, status, bda2str(esp_bt_dev_get_address(), bda_str, sizeof(bda_str)));
 
         switch (state) {
             case INITIAL:
