@@ -195,13 +195,13 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
             break;
         }
         case ESP_BT_GAP_PIN_REQ_EVT: {
-            printf("ESP_BT_GAP_PIN_REQ_EVT min_16_digit:%d", param->pin_req.min_16_digit);
+            printf("ESP_BT_GAP_PIN_REQ_EVT min_16_digit:%d\n", param->pin_req.min_16_digit);
             if (param->pin_req.min_16_digit) {
-                printf("Input pin code: 0000 0000 0000 0000");
+                printf("Input pin code: 0000 0000 0000 0000\n");
                 esp_bt_pin_code_t pin_code = {0};
                 esp_bt_gap_pin_reply(param->pin_req.bda, true, 16, pin_code);
             } else {
-                printf("Input pin code: 1234");
+                printf("Input pin code: 1234\n");
                 esp_bt_pin_code_t pin_code;
                 pin_code[0] = '1';
                 pin_code[1] = '2';
