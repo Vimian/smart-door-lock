@@ -163,20 +163,6 @@ void listen_to_buttons (void *pvParameters) {
             lock_button = false;
         }
 
-        if (gpio_get_level(PIN_OPEN) == 0 && !open_button) {
-            open_button = true;
-
-            if (is_opened) {
-                closing = true;
-                is_opened = false;
-            } else {
-                opening = true;
-                is_opened = true;
-            }
-        } else if (gpio_get_level(PIN_OPEN) == 1 && open_button) {
-            open_button = false;
-        }
-
         vTaskDelay(10);
     }
 }
