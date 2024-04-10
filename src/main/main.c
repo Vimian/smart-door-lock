@@ -199,8 +199,6 @@ void app_main(void) {
 
     xTaskCreate(listen_to_analog, "Analog", 4096, NULL, 1, NULL);
 
-    
-
     while (1) {
         printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d }\n", state, is_opened, is_locked, is_alarm);
 
