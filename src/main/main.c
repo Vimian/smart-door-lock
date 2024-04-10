@@ -188,7 +188,7 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
     
     switch (event) {
         case ESP_BT_GAP_AUTH_CMPL_EVT: {
-            printf("Authentication status: %d, name: %s bda:[%s]", param->auth_cmpl.stat, param->auth_cmpl.device_name, bda2str(param->auth_cmpl.bda, bda_str, sizeof(bda_str)));
+            //printf("Authentication status: %d, name: %s bda:[%s]", param->auth_cmpl.stat, param->auth_cmpl.device_name, bda2str(param->auth_cmpl.bda, bda_str, sizeof(bda_str)));
             if (param->auth_cmpl.stat == ESP_BT_STATUS_SUCCESS) {
                 memcpy(trusted_device, param->auth_cmpl.bda, sizeof(esp_bd_addr_t));
             }
@@ -212,8 +212,7 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
             break;
         }
         case ESP_BT_GAP_ACL_CONN_CMPL_STAT_EVT: {
-            printf("Device connection status: %d\n", param->acl_conn_cmpl_stat.stat);
-            
+            //printf("Device connection status: %d\n", param->acl_conn_cmpl_stat.stat);
             if (param->acl_conn_cmpl_stat.stat != ESP_BT_STATUS_HCI_SUCCESS || !paired) {
                 break;
             }
@@ -227,8 +226,7 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
             break;
         }
         case ESP_BT_GAP_ACL_DISCONN_CMPL_STAT_EVT: {
-            printf("Device disconnected status: %d\n", param->acl_disconn_cmpl_stat.reason);
-            
+            //printf("Device disconnected status: %d\n", param->acl_disconn_cmpl_stat.reason);
             paired = true;
             bt_connected = false;
 
@@ -239,7 +237,7 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
             break;
         }
         default: {
-            printf("Unhandled event: %d\n", event);
+            //printf("Unhandled event: %d\n", event);
         }
     }
 }
