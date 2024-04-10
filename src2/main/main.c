@@ -47,14 +47,6 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
     char bda_str[18] = {0};
     
     switch (event) {
-        case ESP_BT_GAP_RMT_SRVCS_EVT: {
-            if (param->rmt_srvcs.stat != ESP_BT_STATUS_SUCCESS) {
-                printf("Failed to get remote services: %d\n", param->rmt_srvcs.stat);
-                break;
-            }
-            printf("Found Device I know");
-            break;
-        }
         case ESP_BT_GAP_AUTH_CMPL_EVT: {
             if (param->auth_cmpl.stat == ESP_BT_STATUS_SUCCESS) {
                 printf("authentication success: %s bda:[%s]", param->auth_cmpl.device_name, bda2str(param->auth_cmpl.bda, bda_str, sizeof(bda_str)));
