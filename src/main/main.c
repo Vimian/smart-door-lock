@@ -129,7 +129,6 @@ void task_blink (void *pvParameters) {
 
 void listen_to_analog (void *pvParameters) {
     while (1) {
-        //printf("Listening to analog\n");
         int value = GPIO_NUM_32;
         if (gpio_get_level(PIN_OPEN) == 1 && value <= 2000)
         {
