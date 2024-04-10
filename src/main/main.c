@@ -11,7 +11,7 @@
 #define PIN_OPENED (15)
 #define PIN_LOCKED (2)
 #define PIN_ALARM (4)
-#define PIN_OPEN GPIO_NUM_32
+#define PIN_OPEN GPIO_NUM_18
 #define PIN_LOCK GPIO_NUM_19
 
 #define DELAY (500 / portTICK_PERIOD_MS)
@@ -127,23 +127,6 @@ void task_blink (void *pvParameters) {
     }
 }
 
-void listen_to_analog (void *pvParameters) {
-    while (1) {
-        int value = GPIO_NUM_32;
-        if (gpio_get_level(PIN_OPEN) == 1 && value <= 2000)
-        {
-            closing = true;
-            is_opened = false;
-        } else {
-            opening = true;
-            is_opened = true;
-        }
-        
-
-        vTaskDelay(10);
-    }
-}
-
 void listen_to_buttons (void *pvParameters) {
     while (1) {
         //printf("Listening to buttons\n");
@@ -160,6 +143,20 @@ void listen_to_buttons (void *pvParameters) {
             }
         } else if (gpio_get_level(PIN_LOCK) == 1 && lock_button) {
             lock_button = false;
+        }
+
+        if (gpio_get_level(PIN_OPEN) == 0 && !open_button) {
+            open_button = true;
+
+            if (is_opened) {
+                closing = true;
+                is_opened = false;
+            } else {
+                opening = true;
+                is_opened = true;
+            }
+        } else if (gpio_get_level(PIN_OPEN) == 1 && open_button) {
+            open_button = false;
         }
 
         vTaskDelay(10);
@@ -181,8 +178,6 @@ void app_main(void) {
     xTaskCreate(task_blink, "Blink", 4096, NULL, 1, NULL);
 
     xTaskCreate(listen_to_buttons, "Buttons", 4096, NULL, 1, NULL);
-
-    xTaskCreate(listen_to_analog, "Analog", 4096, NULL, 1, NULL);
 
     while (1) {
         printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d }\n", state, is_opened, is_locked, is_alarm);
