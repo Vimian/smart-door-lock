@@ -1,7 +1,2 @@
-main.synctex.gz
-main.pdf
-main.out
-main.log
-main.blg
-main.bbl
-main.aux
+main.*
+!main.tex
