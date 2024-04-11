@@ -230,6 +230,7 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
             /*if (param->acl_disconn_cmpl_stat.reason == ESP_BT_STATUS_HCI_PEER_USER) {
                 paired = true;
             }*/ // Works only when device gets to call the disconnect after pairing
+            // To ensure the finish of the handshake between phone and ESP32, before allowing the device to toggle the lock
             paired = true; // Works always
 
             bt_connected = false;
