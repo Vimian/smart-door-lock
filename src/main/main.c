@@ -227,9 +227,10 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
         }
         case ESP_BT_GAP_ACL_DISCONN_CMPL_STAT_EVT: {
             //printf("Device disconnected status: %d\n", param->acl_disconn_cmpl_stat.reason);
-            if (param->acl_disconn_cmpl_stat.reason == ESP_BT_STATUS_HCI_PEER_USER) {
+            /*if (param->acl_disconn_cmpl_stat.reason == ESP_BT_STATUS_HCI_PEER_USER) {
                 paired = true;
-            }
+            }*/ // Works only when device gets to call the disconnect after pairing
+            paired = true; // Works always
 
             bt_connected = false;
 
