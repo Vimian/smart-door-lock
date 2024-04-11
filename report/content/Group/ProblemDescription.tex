@@ -4,3 +4,24 @@
 [ Author A] [ Author B ] [ Author C ] 
 \newline
 Provide a more detailed problem description here. What is the problem about? Characterize the problem in a way that allows for deriving a solution.
+
+The IOT device in this case, ESP, is the chosen hardware used to connect the Smart door to the network it should support the Functional and non-functional requirements given in the case, The system is also based on SSAV course, that requires UPPAAL Diagrams to show the difference locations and atomic positions the state-machine can traverse. 
+\begin{table}[]
+    \begin{tabular}{lll}
+    \textbf{Functional} & \textbf{Description}                                      & \textbf{MoSCoW} \\
+    \textit{F1}         & The door should be able send a   command from a cellphone & M               \\
+    \textit{F2}         & The door should unlock within 10   seconds or not at all  & M               \\
+    \textit{F3}         & Faults of the smart door should be   detectable           & M              
+    \end{tabular}
+    \end{table}
+
+    \begin{table}[]
+        \begin{tabular}{lll}
+        \textbf{Non-Functional} & \textbf{Description}          & \textbf{MoSCoW} \\
+        \textit{NF1}            & Hardware has to be ESP Wrover & S               \\
+        \textit{NF2}            & Bluetooth                     & S               \\
+        \textit{NF3}            & WiFi                          & C              
+        \end{tabular}
+        \end{table}
+
+These requirements as stated from the case Aswell as some features for us to implement such as through WiFi or Bluetooth these are some of the possible ways for ESP connectivity.
