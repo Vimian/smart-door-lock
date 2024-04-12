@@ -1,7 +1,7 @@
 \subsection{Solution Approach}
 [ Course A ] [ Course B ] [ Course C ] 
 \newline
-[ Author A] [ Author B ] [ Author C ] 
+[ Simon Spedsbjerg] [ Author B ] [ Author C ] 
 \newline
 %Describe the solution approach on a high-level including advantages and drawbacks based on relevant literature.
 The design is split up into 3 features. First being the basic functionality, such as unlocking and locking. Second being bluetooth, here several protocols exists. There is SPP which allows for sending commands, but it has been deprecated1. There is GATT2 which allows for 1-1 communications and stops advertising as soon as it has a connection. It requires BLE which some older phones may not be able to run. There is BLE itself which is a more modern version of bluetooth and better in most regards, especilally when it comes to power consumption3. But is not backward compatible with classic, which will lower potential users. Bluetooth classic which often used for music transfer3 has the advantage of being older and thereby more devices run it. While having the features required the group chose this, while the drawback being increased power consumption, having more potential customers is more valued.
