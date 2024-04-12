@@ -1,0 +1,57 @@
+\documentclass[sigconf]{acmart}
+
+\settopmatter{printacmref=false}
+\setcopyright{none}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\pagestyle{plain}
+
+\setcopyright{none}
+\acmConference[SM2-PRO]{}{Group/Individual}{Hand-in}
+\makeatletter
+\renewcommand\@formatdoi[1]{\ignorespaces}
+\makeatother
+
+\begin{document}
+\title{Smart Door Lock}
+\subtitle{Group Name}
+
+\author{Casper Fenger Jensen}
+\affiliation{%
+  \institution{University of Southern Denmark}
+   \streetaddress{Campusvej 55}
+   \city{Odense}
+   \country{Denmark}
+   \postcode{5230}
+}
+\email{casje19@student.sdu.dk}
+
+\author{Dinh Phu Luu}
+\affiliation{%
+  \institution{University of Southern Denmark}
+   \streetaddress{Campusvej 55}
+   \city{Odense}
+   \country{Denmark}
+   \postcode{5230}
+}
+\email{diluu20@student.sdu.dk}
+
+\author{Simon dos Reis Spedsbjerg}
+\affiliation{%
+  \institution{University of Southern Denmark}
+   \streetaddress{Campusvej 55}
+   \city{Odense}
+   \country{Denmark}
+   \postcode{5230}
+}
+\email{sispe20@student.sdu.dk}
+
+\maketitle
+
+\input{content/body}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{bibliography}
+
+\input{content/appendix}
+
+\end{document}
