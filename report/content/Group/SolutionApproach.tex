@@ -1,13 +1,19 @@
 \subsection{Solution Approach}
 [ Course A ] [ Course B ] [ Course C ] 
 \newline
-[ Simon Spedsbjerg] [ Author B ] [ Author C ] 
+[Simon Spedsbjerg] [Dinh Phu Luu ] [ Author C ] 
 \newline
 %Describe the solution approach on a high-level including advantages and drawbacks based on relevant literature.
-The design is split up into 3 features. First being the basic functionality, such as unlocking and locking. Second being bluetooth, here several protocols exists. There is SPP which allows for sending commands, but it has been deprecated1. There is GATT2 which allows for 1-1 communications and stops advertising as soon as it has a connection. It requires BLE which some older phones may not be able to run. There is BLE itself which is a more modern version of bluetooth and better in most regards, especilally when it comes to power consumption3. But is not backward compatible with classic, which will lower potential users. Bluetooth classic which often used for music transfer3 has the advantage of being older and thereby more devices run it. While having the features required the group chose this, while the drawback being increased power consumption, having more potential customers is more valued.
+The Smart door design is split into the hardware actuators and sensors, and the sofware that connects and gives logic and connects them together. For the hardware to work it must have a software that supports it for our requirements for the system to work. 
+The hardware design is split up into 3 components, buttons, Bluetooth and LED.  First for the basic functionality, such as unlocking and locking using the buttons and other potential component such as potenti-o-meter. Second being bluetooth, here several protocols exists. There is SPP which allows for sending commands, but it has been deprecated1. There is GATT2 which allows for 1-1 communications and stops advertising as soon as it has a connection. It requires BLE which some older phones may not be able to run. There is BLE itself which is a more modern version of bluetooth and better in most regards, especilally when it comes to power consumption3. But is not backward compatible with classic, which will lower potential users. Bluetooth classic which often used for music transfer3 has the advantage of being older and thereby more devices run it. While having the features required the group chose this, while the drawback being increased power consumption, having more potential customers is more valued. And lastly the LED to show shift in colors to show the current state is changed for the statemachince.
+For the Software part, chosing the correct coding language to implement the smart door corresponds with in requirement of the previous section aswell coding the Statemachine, The ESP is mainly writtin in C, though it has API’s that can integrete with others aswell as some support for C alternative, C++, C is the most viable, being a low level memeory allocating code, giving the system the better potential to optimise code to validate our needs for the system[4][5]. 
+To create design for the Statemachine, UPPAAL is a software used to show the different states and varify the system validation. It uses Nodes and edges to determine which relations each states can traverse to other states using conecepts like gaurds and invariance to introduce logical components for statemachine is working as intended[6]. 
 
 
 1 https://www.bluetooth.com/specifications/specs/serial-port-profile-1-1/\\
 2 https://learn.adafruit.com/introduction-to-bluetooth-low-energy/gatt\\
 3 https://www.bluetooth.com/learn-about-bluetooth/tech-overview/\\
  
+[4] https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/cplusplus.html
+[5] https://codedamn.com/news/c/c-vs-c-which-one-should-you-learn-and-why 
+[6] https://uppaal.org/ 
