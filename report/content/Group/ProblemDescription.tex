@@ -29,26 +29,32 @@ These requirements as stated from the case Aswell as some features for us to imp
 
 %New thing
 \subsubsection{Requirements}
-Some requirements were given in the case, and from those an idea will be chosen, which there later on will be added more requirements specifically tailored to the idea. The requirements from the case are the following.
+Some requirements were given in the case, and from those, an idea will be chosen, which there later on will be added more requirements specifically tailored to the idea. The requirements from the case are the following.
 
 R1: Cellphone should be used to unlock the door.
 R2: The door should unlock within 10 seconds or not at all.
 R3: The system should have a high level of trustworthiness.
 
 \subsubsection{Ideas}
-From the requirements some solutions were arived at mainly differing in the communication channel and ease of use for the user. The requirements are the following.
+From the requirements some solutions were arrived at mainly differing in the communication channel and ease of use for the user. The requirements are the following.
 
-Using bluetooth as the communication channel. Idea 1: The door should unlock when seeing a paired device near by. This requiring no additional input from the user, you would just walk up to the door and once you reach the door, the smart lock would most likely already have unlocked the door. Before a device can be used to open the door it needs to be paired with the ESP32, which allows for multiple devices to be able to unlock the same door. Idea 2: The use of an mobile application, were the user would still approach the door like idea 1, but then have to take out the phone, unlock the phone, find the application and sent the unlock event, just to open the door. The security for this idea would be simular to the first where only paired devices would be allowed to sent events to the door.
+Using Bluetooth as the communication channel.
 
-An other approach is to use WiFi instead as the communication channel. Idea 3: Using the ESP32 as an access point (AP), and then having the same flow as with idea 1 where the ESP32 detects trusted devices and unlocks and locks based on that. The main difference from idea 1 is that the phone will auto connect to a WiFi which will conflict with home WiFi, meaning that when the user proaches the door if the phone connects to the ESP32's AP the user will then have to manually which to the home WiFi afterwards to connect to the internet. The other scenario where the phone connects to the home WiFi the user will like in idea 2 have to take out the phone and preforme some actions and connect back to the home WiFi. Idea 4: Is about limiting the switch between Wifi networks and then getting the list of connected devices directly from the home router, which would require some way of getting the list of connected devices from the router. This would have the same user flow as idea 1.
+Idea 1: The door should unlock when seeing a paired device nearby. This requires no additional input from the user, you would just walk up to the door and once you reach the door, the smart lock would most likely already have unlocked the door. Before a device can be used to open the door it needs to be paired with the ESP32, which allows for multiple devices to be able to unlock the same door.
 
-Since it is a home that is being secured, additional any of the previous ideas could be extended which more points of verification, such as face recognition, fingerprint or others.
+Idea 2: The use of a mobile application, where the user would still approach the door like Idea 1, but then have to take out the phone, unlock the phone, find the application and send the unlock event, just to open the door. The security for this idea would be similar to the first where only paired devices would be allowed to send events to the door.
+
+Another approach is to use WiFi instead as the communication channel.
+
+Idea 3: Using the ESP32 as an access point (AP), and then having the same flow as with idea 1 where the ESP32 detects trusted devices and unlocks and locks based on that. The main difference from idea 1 is that the phone will auto connect to a WiFi which will conflict with home WiFi, meaning that when the user approaches the door if the phone connects to the ESP32’s AP the user will then have to manually which to the home WiFi afterwards to connect to the internet. The other scenario is where the phone connects to the home WiFi the user will like in idea 2 have to take out the phone and perform some actions and connect back to the home WiFi.
+
+Idea 4: Is about limiting the switch between Wifi networks and then getting the list of connected devices directly from the home router, which would require some way of getting the list of connected devices from the router. This would have the same user flow as an idea 1. Since it is a home that is being secured, additional any of the previous ideas could be extended with more points of verification, such as face recognition, fingerprint or others.
 
 \subsubsection{Design}
-For this project idea 1 was thosen due to the ease of use for the user. This idea is less secure compared to the others when it comes to bruteforce, as the intruder only needs to bruteforce one of the trusted devices Media Access Control (MAC) address. Along with requirement for securing this some other specifical requirements are add, these are the following.
+For this project idea 1 was chosen due to the ease of use for the user. This idea is less secure compared to the others when it comes to bruteforce, as the intruder only needs to bruteforce one of the trusted devices Media Access Control (MAC) addresses. Along with the requirement for securing this some other specifical requirements are added, these are the following.
 
 R4: Allow pairing of multiple devices.
 R5: 2FA for pairing devices. (pin and physical access to the ESP32)
-R6: Allow for locking with key while paired devices are near by.
+R6: Allow for locking with a key while paired devices are nearby.
 
-R4 is to allow multiple users in the same home, like a family. R5 is to prevent bruteforce of the pairing pin. R6 is to allow the user to lock the door etc. at night without having to turn off bluetooth on the phone.
+R4 is to allow multiple users in the same home, like a family. R5 is to prevent bruteforce of the pairing pin. R6 allows the user to lock the door etc. at night without having to turn off Bluetooth on the phone.
