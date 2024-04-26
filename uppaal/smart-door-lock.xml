@@ -69,8 +69,8 @@ chan unlocking;</declaration>
 		<transition id="id11">
 			<source ref="id8"/>
 			<target ref="id7"/>
-			<label kind="guard" x="178" y="-68">isLocked == false</label>
-			<label kind="synchronisation" x="178" y="-51">closing?</label>
+			<label kind="guard" x="102" y="-93">isLocked == false</label>
+			<label kind="synchronisation" x="102" y="-76">closing?</label>
 			<nail x="204" y="-68"/>
 		</transition>
 		<transition id="id12">
@@ -106,7 +106,7 @@ isLocked = false</label>
 		<transition id="id17">
 			<source ref="id10"/>
 			<target ref="id6"/>
-			<label kind="synchronisation" x="-42" y="272">unlocking?</label>
+			<label kind="synchronisation" x="-34" y="280">unlocking?</label>
 		</transition>
 		<transition id="id18">
 			<source ref="id10"/>
@@ -135,12 +135,12 @@ isLocked = false</label>
 		<transition id="id22">
 			<source ref="id4"/>
 			<target ref="id8"/>
-			<label kind="guard" x="204" y="-161">isOpen == true</label>
+			<label kind="guard" x="119" y="-255">isOpen == true</label>
 		</transition>
 		<transition id="id23">
 			<source ref="id4"/>
 			<target ref="id7"/>
-			<label kind="guard" x="42" y="-119">isLocked == false</label>
+			<label kind="guard" x="-110" y="-161">isLocked == false</label>
 		</transition>
 		<transition id="id24">
 			<source ref="id7"/>
@@ -169,7 +169,7 @@ isAlarm == false</label>
 		<transition id="id28">
 			<source ref="id4"/>
 			<target ref="id5"/>
-			<label kind="guard" x="-255" y="-178">isLocked == true</label>
+			<label kind="guard" x="-187" y="-246">isLocked == true</label>
 		</transition>
 	</template>
 	<template>
