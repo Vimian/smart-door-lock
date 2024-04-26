@@ -4,6 +4,7 @@
 	<declaration>bool isOpen = false;
 bool isLocked = true;
 bool isAlarm = false;
+bool pairingAllow = false;
 
 clock unlockTimer;
 
@@ -12,219 +13,223 @@ chan closing;
 chan locking;
 chan unlocking;</declaration>
 	<template>
+		<name>buttonPair</name>
+		<location id="id0" x="377" y="217">
+			<name x="367" y="183">Active</name>
+		</location>
+		<location id="id1" x="37" y="217">
+			<name x="12" y="183">Idle</name>
+		</location>
+		<init ref="id1"/>
+		<transition id="id2">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="153" y="391">pairingAllow = false</label>
+			<nail x="212" y="374"/>
+		</transition>
+		<transition id="id3">
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="173" y="22">pairingAllow = true</label>
+			<nail x="207" y="47"/>
+		</transition>
+	</template>
+	<template>
 		<name x="5" y="5">doorLock</name>
 		<declaration>// Place local declarations here.
 </declaration>
-		<location id="id0" x="34" y="-306">
+		<location id="id4" x="34" y="-306">
 			<name x="24" y="-340">Initial</name>
 			<committed/>
 		</location>
-		<location id="id1" x="-306" y="34">
+		<location id="id5" x="-306" y="34">
 			<name x="-365" y="8">Locked</name>
 			<label kind="invariant" x="-442" y="25">isOpen == false</label>
 		</location>
-		<location id="id2" x="-136" y="204">
+		<location id="id6" x="-136" y="204">
 			<name x="-229" y="195">Unlocking</name>
 			<label kind="invariant" x="-280" y="212">unlockTimer &lt;= 10</label>
 		</location>
-		<location id="id3" x="34" y="34">
+		<location id="id7" x="34" y="34">
 			<name x="-42" y="-8">Unlocked</name>
 			<label kind="invariant" x="-102" y="8">isOpen == false</label>
 		</location>
-		<location id="id4" x="374" y="34">
+		<location id="id8" x="374" y="34">
 			<name x="382" y="8">Opened</name>
 		</location>
-		<location id="id5" x="204" y="204">
+		<location id="id9" x="204" y="204">
 			<name x="221" y="204">Alarm</name>
 			<label kind="invariant" x="194" y="221">isAlarm == true</label>
 		</location>
-		<location id="id6" x="34" y="374">
+		<location id="id10" x="34" y="374">
 			<name x="24" y="340">AutoLock</name>
 			<label kind="invariant" x="24" y="391">isOpen==true &amp;&amp; isAlarm==false</label>
 		</location>
-		<init ref="id0"/>
-		<transition id="id7">
-			<source ref="id4"/>
-			<target ref="id3"/>
+		<init ref="id4"/>
+		<transition id="id11">
+			<source ref="id8"/>
+			<target ref="id7"/>
 			<label kind="guard" x="178" y="-68">isLocked == false</label>
 			<label kind="synchronisation" x="178" y="-51">closing?</label>
 			<nail x="204" y="-68"/>
 		</transition>
-		<transition id="id8">
-			<source ref="id3"/>
-			<target ref="id1"/>
+		<transition id="id12">
+			<source ref="id7"/>
+			<target ref="id5"/>
 			<label kind="synchronisation" x="-212" y="8">locking?</label>
 		</transition>
-		<transition id="id9">
-			<source ref="id2"/>
-			<target ref="id5"/>
+		<transition id="id13">
+			<source ref="id6"/>
+			<target ref="id9"/>
 			<label kind="guard" x="0" y="238">unlockTimer == 10</label>
 			<nail x="68" y="238"/>
 		</transition>
-		<transition id="id10">
-			<source ref="id2"/>
-			<target ref="id4"/>
+		<transition id="id14">
+			<source ref="id6"/>
+			<target ref="id8"/>
 			<label kind="guard" x="110" y="51">isOpen == true &amp;&amp;
 unlockTimer &lt;= 10</label>
 			<label kind="assignment" x="110" y="85">isAlarm = false,
 isLocked = false</label>
 		</transition>
-		<transition id="id11">
-			<source ref="id5"/>
-			<target ref="id2"/>
+		<transition id="id15">
+			<source ref="id9"/>
+			<target ref="id6"/>
 			<label kind="synchronisation" x="17" y="178">unlocking?</label>
 		</transition>
-		<transition id="id12">
-			<source ref="id2"/>
-			<target ref="id6"/>
+		<transition id="id16">
+			<source ref="id6"/>
+			<target ref="id10"/>
 			<label kind="guard" x="-280" y="280">unlockTimer == 10</label>
 			<nail x="-136" y="306"/>
 		</transition>
-		<transition id="id13">
-			<source ref="id6"/>
-			<target ref="id2"/>
+		<transition id="id17">
+			<source ref="id10"/>
+			<target ref="id6"/>
 			<label kind="synchronisation" x="-42" y="272">unlocking?</label>
 		</transition>
-		<transition id="id14">
-			<source ref="id6"/>
-			<target ref="id1"/>
+		<transition id="id18">
+			<source ref="id10"/>
+			<target ref="id5"/>
 			<label kind="synchronisation" x="-221" y="348">closing?</label>
 			<nail x="-306" y="374"/>
 		</transition>
-		<transition id="id15">
-			<source ref="id4"/>
-			<target ref="id6"/>
+		<transition id="id19">
+			<source ref="id8"/>
+			<target ref="id10"/>
 			<label kind="synchronisation" x="280" y="348">locking?</label>
 			<nail x="374" y="374"/>
 		</transition>
-		<transition id="id16">
-			<source ref="id2"/>
-			<target ref="id1"/>
+		<transition id="id20">
+			<source ref="id6"/>
+			<target ref="id5"/>
 			<label kind="guard" x="-289" y="136">unlockTimer == 10</label>
 		</transition>
-		<transition id="id17">
-			<source ref="id1"/>
-			<target ref="id4"/>
+		<transition id="id21">
+			<source ref="id5"/>
+			<target ref="id8"/>
 			<label kind="synchronisation" x="-8" y="-399">opening?</label>
 			<nail x="-306" y="-374"/>
 			<nail x="374" y="-374"/>
 		</transition>
-		<transition id="id18">
-			<source ref="id0"/>
-			<target ref="id4"/>
+		<transition id="id22">
+			<source ref="id4"/>
+			<target ref="id8"/>
 			<label kind="guard" x="204" y="-161">isOpen == true</label>
 		</transition>
-		<transition id="id19">
-			<source ref="id0"/>
-			<target ref="id3"/>
+		<transition id="id23">
+			<source ref="id4"/>
+			<target ref="id7"/>
 			<label kind="guard" x="42" y="-119">isLocked == false</label>
 		</transition>
-		<transition id="id20">
-			<source ref="id3"/>
-			<target ref="id4"/>
+		<transition id="id24">
+			<source ref="id7"/>
+			<target ref="id8"/>
 			<label kind="synchronisation" x="161" y="8">opening?</label>
 		</transition>
-		<transition id="id21">
-			<source ref="id4"/>
-			<target ref="id5"/>
+		<transition id="id25">
+			<source ref="id8"/>
+			<target ref="id9"/>
 			<label kind="guard" x="238" y="144">isLocked == true</label>
 			<label kind="assignment" x="238" y="161">isAlarm = true</label>
 		</transition>
-		<transition id="id22">
-			<source ref="id2"/>
-			<target ref="id3"/>
+		<transition id="id26">
+			<source ref="id6"/>
+			<target ref="id7"/>
 			<label kind="guard" x="-76" y="68">unlockTimer &lt; 10 &amp;&amp;
 isAlarm == false</label>
 			<label kind="assignment" x="-76" y="102">isLocked = false</label>
 		</transition>
-		<transition id="id23">
-			<source ref="id1"/>
-			<target ref="id2"/>
+		<transition id="id27">
+			<source ref="id5"/>
+			<target ref="id6"/>
 			<label kind="synchronisation" x="-195" y="59">unlocking?</label>
 			<nail x="-136" y="102"/>
 		</transition>
-		<transition id="id24">
-			<source ref="id0"/>
-			<target ref="id1"/>
+		<transition id="id28">
+			<source ref="id4"/>
+			<target ref="id5"/>
 			<label kind="guard" x="-255" y="-178">isLocked == true</label>
 		</transition>
 	</template>
 	<template>
 		<name>buttonOpen</name>
-		<location id="id25" x="-272" y="0">
-			<name x="-282" y="-34">Initial</name>
-			<committed/>
+		<location id="id29" x="-102" y="0">
+			<name x="-127" y="-34">Idle</name>
 		</location>
-		<location id="id26" x="-102" y="0">
-			<name x="-112" y="-34">Idle</name>
-		</location>
-		<location id="id27" x="238" y="0">
+		<location id="id30" x="238" y="0">
 			<name x="228" y="-34">Active</name>
-			<committed/>
 		</location>
-		<init ref="id25"/>
-		<transition id="id28">
-			<source ref="id26"/>
-			<target ref="id27"/>
+		<init ref="id29"/>
+		<transition id="id31">
+			<source ref="id29"/>
+			<target ref="id30"/>
 			<label kind="guard" x="34" y="170">isOpen == true</label>
 			<label kind="synchronisation" x="34" y="187">closing!</label>
 			<label kind="assignment" x="34" y="204">isOpen = false</label>
 			<nail x="68" y="170"/>
 		</transition>
-		<transition id="id29">
-			<source ref="id27"/>
-			<target ref="id26"/>
+		<transition id="id32">
+			<source ref="id30"/>
+			<target ref="id29"/>
 		</transition>
-		<transition id="id30">
-			<source ref="id26"/>
-			<target ref="id27"/>
+		<transition id="id33">
+			<source ref="id29"/>
+			<target ref="id30"/>
 			<label kind="guard" x="34" y="-229">isOpen == false</label>
 			<label kind="synchronisation" x="34" y="-212">opening!</label>
 			<label kind="assignment" x="34" y="-195">isOpen = true</label>
 			<nail x="68" y="-170"/>
 		</transition>
-		<transition id="id31">
-			<source ref="id25"/>
-			<target ref="id26"/>
-		</transition>
 	</template>
 	<template>
 		<name>buttonLock</name>
-		<location id="id32" x="238" y="0">
+		<location id="id34" x="238" y="0">
 			<name x="228" y="-34">Active</name>
-			<committed/>
 		</location>
-		<location id="id33" x="-102" y="0">
-			<name x="-112" y="-34">Idle</name>
+		<location id="id35" x="-102" y="0">
+			<name x="-127" y="-34">Idle</name>
 		</location>
-		<location id="id34" x="-272" y="0">
-			<name x="-282" y="-34">Initial</name>
-			<committed/>
-		</location>
-		<init ref="id34"/>
-		<transition id="id35">
-			<source ref="id33"/>
-			<target ref="id32"/>
+		<init ref="id35"/>
+		<transition id="id36">
+			<source ref="id35"/>
+			<target ref="id34"/>
 			<label kind="guard" x="34" y="170">isLocked == false</label>
 			<label kind="synchronisation" x="34" y="187">locking!</label>
 			<label kind="assignment" x="34" y="204">isLocked = true</label>
 			<nail x="68" y="170"/>
 		</transition>
-		<transition id="id36">
-			<source ref="id32"/>
-			<target ref="id33"/>
-		</transition>
 		<transition id="id37">
-			<source ref="id33"/>
-			<target ref="id32"/>
+			<source ref="id34"/>
+			<target ref="id35"/>
+		</transition>
+		<transition id="id38">
+			<source ref="id35"/>
+			<target ref="id34"/>
 			<label kind="guard" x="34" y="-229">isLocked == true</label>
 			<label kind="synchronisation" x="34" y="-212">unlocking!</label>
 			<label kind="assignment" x="34" y="-195">unlockTimer = 0</label>
 			<nail x="68" y="-170"/>
-		</transition>
-		<transition id="id38">
-			<source ref="id34"/>
-			<target ref="id33"/>
 		</transition>
 	</template>
 	<template>
@@ -235,12 +240,8 @@ isAlarm == false</label>
 		<location id="id40" x="238" y="0">
 			<name x="228" y="-34">Connected</name>
 		</location>
-		<location id="id41" x="-272" y="0">
-			<name x="-282" y="-34">Initial</name>
-			<committed/>
-		</location>
-		<init ref="id41"/>
-		<transition id="id42">
+		<init ref="id39"/>
+		<transition id="id41">
 			<source ref="id40"/>
 			<target ref="id39"/>
 			<label kind="guard" x="34" y="170">isLocked == false</label>
@@ -248,7 +249,7 @@ isAlarm == false</label>
 			<label kind="assignment" x="34" y="204">isLocked = true</label>
 			<nail x="68" y="170"/>
 		</transition>
-		<transition id="id43">
+		<transition id="id42">
 			<source ref="id39"/>
 			<target ref="id40"/>
 			<label kind="guard" x="34" y="-229">isLocked == true</label>
@@ -256,37 +257,52 @@ isAlarm == false</label>
 			<label kind="assignment" x="34" y="-195">unlockTimer = 0</label>
 			<nail x="68" y="-170"/>
 		</transition>
-		<transition id="id44">
-			<source ref="id41"/>
-			<target ref="id39"/>
-		</transition>
 	</template>
 	<system>// Place template instantiations here.
 DoorLock = doorLock();
 ButtonOpen = buttonOpen();
 ButtonLock = buttonLock();
+ButtonPair = buttonPair();
 Bluetooth = bluetooth();
 
 // List one or more processes to be composed into a system.
-system DoorLock, ButtonOpen, ButtonLock, Bluetooth;
+system DoorLock, ButtonOpen, ButtonLock, ButtonPair, Bluetooth;
 </system>
 	<queries>
 		<query>
 			<formula>A[] not deadlock</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-04-14 20:43:27 +0200">
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
 			</result>
 		</query>
 		<query>
-			<formula>A&lt;&gt; DoorLock.Opened and isLocked imply DoorLock.Alarm</formula>
+			<formula>A[] DoorLock.Unlocking and unlockTimer &gt;= 10 imply not (DoorLock.Unlocked or DoorLock.Opened)</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-04-14 20:43:27 +0200">
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
 			</result>
 		</query>
 		<query>
-			<formula>A[] DoorLock.Unlocking and unlockTimer == 10 imply not (DoorLock.Unlocked or DoorLock.Opened)</formula>
+			<formula>A&lt;&gt; DoorLock.Unlocking and unlockTimer &lt; 10 imply (DoorLock.Unlocked or DoorLock.Opened)</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-04-14 20:43:27 +0200">
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A&lt;&gt; isLocked and DoorLock.Opened imply DoorLock.Alarm</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A&lt;&gt; isAlarm and DoorLock.Unlocking and unlockTimer &lt; 10 imply isAlarm == false</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
+			</result>
+		</query>
+		<query>
+			<formula>A&lt;&gt; isAlarm and not (DoorLock.Unlocking or unlockTimer &lt; 10) imply isAlarm == true</formula>
+			<comment/>
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
 			</result>
 		</query>
 	</queries>
