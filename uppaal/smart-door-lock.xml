@@ -272,37 +272,37 @@ system DoorLock, ButtonOpen, ButtonLock, ButtonPair, Bluetooth;
 		<query>
 			<formula>A[] not deadlock</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:55:02 +0200">
 			</result>
 		</query>
 		<query>
 			<formula>A[] DoorLock.Unlocking and unlockTimer &gt;= 10 imply not (DoorLock.Unlocked or DoorLock.Opened)</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:55:02 +0200">
 			</result>
 		</query>
 		<query>
 			<formula>A&lt;&gt; DoorLock.Unlocking and unlockTimer &lt; 10 imply (DoorLock.Unlocked or DoorLock.Opened)</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:55:02 +0200">
 			</result>
 		</query>
 		<query>
 			<formula>A&lt;&gt; isLocked and DoorLock.Opened imply DoorLock.Alarm</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:55:02 +0200">
 			</result>
 		</query>
 		<query>
 			<formula>A&lt;&gt; isAlarm and DoorLock.Unlocking and unlockTimer &lt; 10 imply isAlarm == false</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:55:02 +0200">
 			</result>
 		</query>
 		<query>
 			<formula>A&lt;&gt; isAlarm and not (DoorLock.Unlocking or unlockTimer &lt; 10) imply isAlarm == true</formula>
 			<comment/>
-			<result outcome="success" type="quality" timestamp="2024-04-26 13:39:02 +0200">
+			<result outcome="success" type="quality" timestamp="2024-04-26 13:55:02 +0200">
 			</result>
 		</query>
 	</queries>
