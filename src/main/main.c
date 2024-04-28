@@ -14,6 +14,7 @@
 #include "esp_bt_device.h"
 #include "esp_gap_bt_api.h"
 #include "string.h"
+#include <stdint.h>
 
 #define PIN_OPENED (15)
 #define PIN_LOCKED (2)
@@ -48,6 +49,77 @@ int unlock_timer = 0;
 bool open_button = false;
 bool lock_button = false;
 bool bt_connected = false;
+
+/*--------------------2 FAC AUTH--------------------*/
+
+#define PIN_AUTH GPIO_NUM_25
+#define CONFIRMATION_PIN 26
+#define AUTHENTICATED_PIN 27
+
+bool auth_button_pressed = false;
+
+bluetooth_address authenticated_units[10];
+
+typedef struct {
+    uint8_t byte[6];
+} bluetooth_address;
+
+int auth_iterator = 0;
+
+bluetooth_address lastest_bluetooth_unit;
+
+//returns true if pressed and adds the unit to the authenticated_units array, false if not
+bool update_auth() {
+    if (gpio_get_level(PIN_AUTH) == true) {
+        //Confirm button is pressed with light
+        auth_button_pressed = true;
+        //Check if the unit already exists
+        for (size_t i = 0; i < sizeof(authenticated_units) / sizeof(0); i++) {
+            if (authenticated_units[i] == lastest_bluetooth_unit) {
+                return false;
+            }
+        }
+        //Add to authenticated
+        if (bt_connected == true && auth_iterator != 10) {
+            authenticated_units[auth_iterator] = lastest_bluetooth_unit;
+            auth_iterator++;
+            return true;
+        }
+    }
+    else {
+        //Confirm button is not pressed with light
+        auth_button_pressed = false;
+    }
+    return false;
+}
+
+void set_lastest_unit(esp_bt_gab_cb_param_t* param) {
+    lastest_bluetooth_unit[0] = param->link_est.bda[0];
+    lastest_bluetooth_unit[1] = param->link_est.bda[1];
+    lastest_bluetooth_unit[2] = param->link_est.bda[2];
+    lastest_bluetooth_unit[3] = param->link_est.bda[3];
+    lastest_bluetooth_unit[4] = param->link_est.bda[4];
+    lastest_bluetooth_unit[5] = param->link_est.bda[5];
+}
+
+//Verify existing units and sets
+bool is_authenticated(esp_bt_gab_cb_param_t* param) {
+    set_lastest_unit(param);
+    update_auth();
+    for (size_t i = 0; i < sizeof(authenticated_units) / sizeof(0); i++) {
+        if (authenticated_units[i] == lastest_bluetooth_unit) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//TODO: if not authenticated nor auth_button_pressed, force a disconnect
+//TODO: Setup ESP32 Device
+//TODO: Set light
+//TODO: Test and Debug
+
+/*--------------------------------------------------*/
 
 void initial() {
     if (is_locked && !is_opened) {
@@ -314,6 +386,8 @@ void app_main(void) {
     gpio_set_direction(PIN_LOCK, GPIO_MODE_INPUT);
 
     setup_bt();
+
+    update_auth();
 
     xTaskCreate(task_blink, "Blink", 4096, NULL, 1, NULL);
 
