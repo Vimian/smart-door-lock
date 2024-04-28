@@ -58,16 +58,16 @@ bool bt_connected = false;
 
 bool auth_button_pressed = false;
 
-bluetooth_address authenticated_units[10];
-
 //noticed that esp_bd_addr_t and my struct is the same, should change in future
 typedef struct {
     uint8_t byte[6];
-} bluetooth_address;
+} Bluetooth_address;
 
+
+Bluetooth_address authenticated_units[10];
 int auth_iterator = 0;
 
-bluetooth_address lastest_bluetooth_unit;
+Bluetooth_address lastest_bluetooth_unit;
 
 //returns true if pressed and adds the unit to the authenticated_units array, false if not
 bool update_auth() {
@@ -75,8 +75,14 @@ bool update_auth() {
         //Confirm button is pressed with light
         auth_button_pressed = true;
         //Check if the unit already exists
-        for (size_t i = 0; i < sizeof(authenticated_units) / sizeof(0); i++) {
-            if (authenticated_units[i] == lastest_bluetooth_unit) {
+        for (size_t i = 0; i < sizeof(authenticated_units); i++) {
+            if (!(authenticated_units[i].byte[0] == lastest_bluetooth_unit.byte[0] &&
+                authenticated_units[i].byte[1] == lastest_bluetooth_unit.byte[1] &&
+                authenticated_units[i].byte[2] == lastest_bluetooth_unit.byte[2] &&
+                authenticated_units[i].byte[3] == lastest_bluetooth_unit.byte[3] &&
+                authenticated_units[i].byte[4] == lastest_bluetooth_unit.byte[4] &&
+                authenticated_units[i].byte[5] == lastest_bluetooth_unit.byte[5])
+                ) {
                 return false;
             }
         }
@@ -94,25 +100,31 @@ bool update_auth() {
     return false;
 }
 
-void set_lastest_unit(esp_bt_gab_cb_param_t* param) {
-    lastest_bluetooth_unit[0] = param->link_est.bda[0];
-    lastest_bluetooth_unit[1] = param->link_est.bda[1];
-    lastest_bluetooth_unit[2] = param->link_est.bda[2];
-    lastest_bluetooth_unit[3] = param->link_est.bda[3];
-    lastest_bluetooth_unit[4] = param->link_est.bda[4];
-    lastest_bluetooth_unit[5] = param->link_est.bda[5];
+void set_lastest_unit() {
+    lastest_bluetooth_unit.byte[0] = esp_bt_dev_get_address()[0];
+    lastest_bluetooth_unit.byte[1] = esp_bt_dev_get_address()[1];
+    lastest_bluetooth_unit.byte[2] = esp_bt_dev_get_address()[2];
+    lastest_bluetooth_unit.byte[3] = esp_bt_dev_get_address()[3];
+    lastest_bluetooth_unit.byte[4] = esp_bt_dev_get_address()[4];
+    lastest_bluetooth_unit.byte[5] = esp_bt_dev_get_address()[5];
 }
 
 //Verify existing units and sets
-bool is_authenticated(esp_bt_gab_cb_param_t* param) {
-    set_lastest_unit(param);
+bool is_authenticated() {
+    set_lastest_unit();
     update_auth();
-    for (size_t i = 0; i < sizeof(authenticated_units) / sizeof(0); i++) {
-        if (authenticated_units[i] == lastest_bluetooth_unit) {
+    for (size_t i = 0; i < sizeof(authenticated_units); i++) {
+        if (authenticated_units[i].byte[0] == lastest_bluetooth_unit.byte[0] &&
+            authenticated_units[i].byte[1] == lastest_bluetooth_unit.byte[1] &&
+            authenticated_units[i].byte[2] == lastest_bluetooth_unit.byte[2] &&
+            authenticated_units[i].byte[3] == lastest_bluetooth_unit.byte[3] &&
+            authenticated_units[i].byte[4] == lastest_bluetooth_unit.byte[4] &&
+            authenticated_units[i].byte[5] == lastest_bluetooth_unit.byte[5]) {
             return true;
         }
     }
-    esp_bt_gap_disconnect(param->link_est.initiator);//disconnect
+    //TODO: This does not work
+    esp_bt_gap_disconnect(esp_bt_dev_get_address);//disconnect
     return false;
 }
 
@@ -293,7 +305,7 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
 
             bt_connected = true;
 
-            if (!is_authenticated(param)) {
+            if (!is_authenticated()) {
                 bt_connected = false;
                 break;
             }
