@@ -60,6 +60,7 @@ bool auth_button_pressed = false;
 
 bluetooth_address authenticated_units[10];
 
+//noticed that esp_bd_addr_t and my struct is the same, should change in future
 typedef struct {
     uint8_t byte[6];
 } bluetooth_address;
@@ -111,13 +112,14 @@ bool is_authenticated(esp_bt_gab_cb_param_t* param) {
             return true;
         }
     }
+    esp_bt_gap_disconnect(param->link_est.initiator);//disconnect
     return false;
 }
 
-//TODO: if not authenticated nor auth_button_pressed, force a disconnect
-//TODO: Setup ESP32 Device
-//TODO: Set light
-//TODO: Test and Debug
+//TODO: if not authenticated nor auth_button_pressed, force a disconnect (v)
+//TODO: Setup ESP32 Device and its wires (x)
+//TODO: Set light (x)
+//TODO: Test and Debug (x)
 
 /*--------------------------------------------------*/
 
@@ -290,6 +292,11 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
             }
 
             bt_connected = true;
+
+            if (!is_authenticated(param)) {
+                bt_connected = false;
+                break;
+            }
 
             if (is_locked && !unlocking) {
                 unlocking = true;
