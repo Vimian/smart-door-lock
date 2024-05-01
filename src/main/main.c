@@ -57,6 +57,8 @@ bool bt_connected = false;
 #define AUTHENTICATED_PIN 27
 
 bool auth_button_pressed = false;
+bool allow_pairing = false;
+
 
 //noticed that esp_bd_addr_t and my struct is the same, should change in future
 typedef struct {
@@ -112,6 +114,7 @@ void set_lastest_unit() {
 //Verify existing units and sets
 bool is_authenticated() {
     set_lastest_unit();
+    allow_pairing = false;
     update_auth();
     for (size_t i = 0; i < sizeof(authenticated_units); i++) {
         if (authenticated_units[i].byte[0] == lastest_bluetooth_unit.byte[0] &&
@@ -120,11 +123,14 @@ bool is_authenticated() {
             authenticated_units[i].byte[3] == lastest_bluetooth_unit.byte[3] &&
             authenticated_units[i].byte[4] == lastest_bluetooth_unit.byte[4] &&
             authenticated_units[i].byte[5] == lastest_bluetooth_unit.byte[5]) {
+            allow_pairing = true;
             return true;
         }
     }
+
     //TODO: This does not work
-    esp_bt_gap_disconnect(esp_bt_dev_get_address);//disconnect
+    //esp_bt_gap_disconnect(esp_bt_dev_get_address);//disconnect //couldn't get it to work, doing the other method instead
+    allow_pairing = false; //If can disconnet, remove this line
     return false;
 }
 
