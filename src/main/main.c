@@ -73,9 +73,10 @@ Bluetooth_address lastest_bluetooth_unit;
 
 //returns true if pressed and adds the unit to the authenticated_units array, false if not
 bool update_auth() {
-    if (gpio_get_level(PIN_AUTH) == true) {
+    if (gpio_get_level(PIN_AUTH) == 1) {
         //Confirm button is pressed with light
         auth_button_pressed = true;
+        gpio_set_level(CONFIRMATION_PIN, auth_button_pressed);
         //Check if the unit already exists
         for (size_t i = 0; i < sizeof(authenticated_units); i++) {
             if (!(authenticated_units[i].byte[0] == lastest_bluetooth_unit.byte[0] &&
