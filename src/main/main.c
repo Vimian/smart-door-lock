@@ -52,19 +52,17 @@ bool bt_connected = false;
 
 /*--------------------2 FAC AUTH--------------------*/
 
-#define PIN_AUTH GPIO_NUM_25
-#define CONFIRMATION_PIN 26
-#define AUTHENTICATED_PIN 27
+#define PIN_AUTH GPIO_NUM_5
+#define CONFIRMATION_PIN (14)
+#define AUTHENTICATED_PIN (27)
 
 bool auth_button_pressed = false;
-bool allow_pairing = false;
 
 
 //noticed that esp_bd_addr_t and my struct is the same, should change in future
 typedef struct {
     uint8_t byte[6];
 } Bluetooth_address;
-
 
 Bluetooth_address authenticated_units[10];
 int auth_iterator = 0;
@@ -73,28 +71,13 @@ Bluetooth_address lastest_bluetooth_unit;
 
 //returns true if pressed and adds the unit to the authenticated_units array, false if not
 bool update_auth() {
-    if (gpio_get_level(PIN_AUTH) == 1) {
+    gpio_set_level(CONFIRMATION_PIN, 0);
+    if (gpio_get_level(PIN_AUTH) == 0) { //pressed
+        printf("Pressed\n");
         //Confirm button is pressed with light
         auth_button_pressed = true;
         gpio_set_level(CONFIRMATION_PIN, auth_button_pressed);
         //Check if the unit already exists
-        for (size_t i = 0; i < sizeof(authenticated_units); i++) {
-            if (!(authenticated_units[i].byte[0] == lastest_bluetooth_unit.byte[0] &&
-                authenticated_units[i].byte[1] == lastest_bluetooth_unit.byte[1] &&
-                authenticated_units[i].byte[2] == lastest_bluetooth_unit.byte[2] &&
-                authenticated_units[i].byte[3] == lastest_bluetooth_unit.byte[3] &&
-                authenticated_units[i].byte[4] == lastest_bluetooth_unit.byte[4] &&
-                authenticated_units[i].byte[5] == lastest_bluetooth_unit.byte[5])
-                ) {
-                return false;
-            }
-        }
-        //Add to authenticated
-        if (bt_connected == true && auth_iterator != 10) {
-            authenticated_units[auth_iterator] = lastest_bluetooth_unit;
-            auth_iterator++;
-            return true;
-        }
     }
     else {
         //Confirm button is not pressed with light
@@ -104,6 +87,7 @@ bool update_auth() {
 }
 
 void set_lastest_unit() {
+    printf("Added unit to verified\n");
     lastest_bluetooth_unit.byte[0] = esp_bt_dev_get_address()[0];
     lastest_bluetooth_unit.byte[1] = esp_bt_dev_get_address()[1];
     lastest_bluetooth_unit.byte[2] = esp_bt_dev_get_address()[2];
@@ -112,26 +96,75 @@ void set_lastest_unit() {
     lastest_bluetooth_unit.byte[5] = esp_bt_dev_get_address()[5];
 }
 
+bool add_to_auth() {
+    if (gpio_get_level(PIN_AUTH) != 0) return false;
+    set_lastest_unit();
+    if (auth_button_pressed) {
+        for (int i = 0; i < 10; i++) {
+            printf("Verifying\n");
+            if (auth_iterator == 0) break;
+            if ((authenticated_units[i].byte[0] == lastest_bluetooth_unit.byte[0] &&
+                authenticated_units[i].byte[1] == lastest_bluetooth_unit.byte[1] &&
+                authenticated_units[i].byte[2] == lastest_bluetooth_unit.byte[2] &&
+                authenticated_units[i].byte[3] == lastest_bluetooth_unit.byte[3] &&
+                authenticated_units[i].byte[4] == lastest_bluetooth_unit.byte[4] &&
+                authenticated_units[i].byte[5] == lastest_bluetooth_unit.byte[5])
+                ) {
+                printf("Already Verified\n");
+                return false;
+            }
+        }
+        //Add to authenticated
+        if (bt_connected == true && auth_iterator != 10) {
+            printf("Verified and Added\n");
+            authenticated_units[auth_iterator] = lastest_bluetooth_unit;
+            printf("authenticated: %d : %d : %d : %d : %d : %d. \n",
+                authenticated_units[auth_iterator].byte[0],
+                authenticated_units[auth_iterator].byte[1],
+                authenticated_units[auth_iterator].byte[2],
+                authenticated_units[auth_iterator].byte[3],
+                authenticated_units[auth_iterator].byte[4],
+                authenticated_units[auth_iterator].byte[5]
+            );
+            auth_iterator++;
+            return true;
+        }
+    }
+    return false;
+}
+
 //Verify existing units and sets
 bool is_authenticated() {
+    printf("is_authenticated\n");
     set_lastest_unit();
-    allow_pairing = false;
-    update_auth();
-    for (size_t i = 0; i < sizeof(authenticated_units); i++) {
+    for (int i = 0; i < 10; i++) {
+        printf("authenticated: %d : %d : %d : %d : %d : %d. \n",
+            authenticated_units[i].byte[0],
+            authenticated_units[i].byte[1],
+            authenticated_units[i].byte[2],
+            authenticated_units[i].byte[3],
+            authenticated_units[i].byte[4],
+            authenticated_units[i].byte[5]
+        );
+    }
+    printf("lastest: % d : % d : % d : % d : % d : % d. \n",
+        lastest_bluetooth_unit.byte[0],
+        lastest_bluetooth_unit.byte[1],
+        lastest_bluetooth_unit.byte[2],
+        lastest_bluetooth_unit.byte[3],
+        lastest_bluetooth_unit.byte[4],
+        lastest_bluetooth_unit.byte[5]
+    );
+    for (size_t i = 0; i < sizeof(authenticated_units) / sizeof(authenticated_units[0]); i++) {
         if (authenticated_units[i].byte[0] == lastest_bluetooth_unit.byte[0] &&
             authenticated_units[i].byte[1] == lastest_bluetooth_unit.byte[1] &&
             authenticated_units[i].byte[2] == lastest_bluetooth_unit.byte[2] &&
             authenticated_units[i].byte[3] == lastest_bluetooth_unit.byte[3] &&
             authenticated_units[i].byte[4] == lastest_bluetooth_unit.byte[4] &&
             authenticated_units[i].byte[5] == lastest_bluetooth_unit.byte[5]) {
-            allow_pairing = true;
             return true;
         }
     }
-
-    //TODO: This does not work
-    //esp_bt_gap_disconnect(esp_bt_dev_get_address);//disconnect //couldn't get it to work, doing the other method instead
-    allow_pairing = false; //If can disconnet, remove this line
     return false;
 }
 
@@ -178,9 +211,9 @@ void opened() {
 }
 
 void func_unlocking() {
-    if (unlock_timer == 10 && !is_opened) {
+    if (unlock_timer == 10 && !is_opened && !is_authenticated()) {
         state = LOCKED;
-    } else if (unlock_timer < 10 && !is_opened) {
+    } else if (unlock_timer < 10 && !is_opened && is_authenticated()) {
         is_alarm = false;
         is_locked = false;
         state = UNLOCKED;
@@ -312,9 +345,18 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
 
             bt_connected = true;
 
-            if (!is_authenticated()) {
+            if (add_to_auth()) {
+                printf("Added to verified\n");
+            }
+            else {
+                printf("Did not add to verified\n");
+            }
+            if (is_authenticated()) {
+                printf("Authenticated\n");
+            }
+            else {
+                printf("Did not Authenticate\n");
                 bt_connected = false;
-                break;
             }
 
             if (is_locked && !unlocking) {
@@ -413,7 +455,7 @@ void app_main(void) {
 
     setup_bt();
 
-    update_auth();
+    
 
     xTaskCreate(task_blink, "Blink", 4096, NULL, 1, NULL);
 
@@ -425,7 +467,7 @@ void app_main(void) {
         esp_bluedroid_status_t status = esp_bluedroid_get_status();
         char bda_str[18] = {0};
         printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d, bt_connected: %d, bt_status: %d, ESP32_bt_addr: %s }\n", state, is_opened, is_locked, is_alarm, bt_connected, status, bda2str(esp_bt_dev_get_address(), bda_str, sizeof(bda_str)));
-
+        update_auth();
         switch (state) {
             case INITIAL:
                 initial();
