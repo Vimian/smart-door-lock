@@ -53,11 +53,8 @@ bool bt_connected = false;
 /*--------------------2 FAC AUTH--------------------*/
 
 #define PIN_AUTH GPIO_NUM_5
-#define CONFIRMATION_PIN (14)
-#define AUTHENTICATED_PIN (27)
 
 bool auth_button_pressed = false;
-
 
 //noticed that esp_bd_addr_t and my struct is the same, should change in future
 typedef struct {
@@ -71,23 +68,18 @@ Bluetooth_address lastest_bluetooth_unit;
 
 //returns true if pressed and adds the unit to the authenticated_units array, false if not
 bool update_auth() {
-    gpio_set_level(CONFIRMATION_PIN, 0);
     if (gpio_get_level(PIN_AUTH) == 0) { //pressed
-        printf("Pressed\n");
+        printf("Button is Pressed\n");
         //Confirm button is pressed with light
         auth_button_pressed = true;
-        gpio_set_level(CONFIRMATION_PIN, auth_button_pressed);
-        //Check if the unit already exists
     }
     else {
-        //Confirm button is not pressed with light
         auth_button_pressed = false;
     }
     return false;
 }
 
 void set_lastest_unit() {
-    printf("Added unit to verified\n");
     lastest_bluetooth_unit.byte[0] = esp_bt_dev_get_address()[0];
     lastest_bluetooth_unit.byte[1] = esp_bt_dev_get_address()[1];
     lastest_bluetooth_unit.byte[2] = esp_bt_dev_get_address()[2];
@@ -100,9 +92,9 @@ bool add_to_auth() {
     if (gpio_get_level(PIN_AUTH) != 0) return false;
     set_lastest_unit();
     if (auth_button_pressed) {
-        for (int i = 0; i < 10; i++) {
+        for (size_t i = 0; i < sizeof(authenticated_units) / sizeof(authenticated_units[0]); i++) {
             printf("Verifying\n");
-            if (auth_iterator == 0) break;
+            if (auth_iterator == 0) break; //first time, there is no reason to check
             if ((authenticated_units[i].byte[0] == lastest_bluetooth_unit.byte[0] &&
                 authenticated_units[i].byte[1] == lastest_bluetooth_unit.byte[1] &&
                 authenticated_units[i].byte[2] == lastest_bluetooth_unit.byte[2] &&
@@ -118,14 +110,6 @@ bool add_to_auth() {
         if (bt_connected == true && auth_iterator != 10) {
             printf("Verified and Added\n");
             authenticated_units[auth_iterator] = lastest_bluetooth_unit;
-            printf("authenticated: %d : %d : %d : %d : %d : %d. \n",
-                authenticated_units[auth_iterator].byte[0],
-                authenticated_units[auth_iterator].byte[1],
-                authenticated_units[auth_iterator].byte[2],
-                authenticated_units[auth_iterator].byte[3],
-                authenticated_units[auth_iterator].byte[4],
-                authenticated_units[auth_iterator].byte[5]
-            );
             auth_iterator++;
             return true;
         }
@@ -135,26 +119,7 @@ bool add_to_auth() {
 
 //Verify existing units and sets
 bool is_authenticated() {
-    printf("is_authenticated\n");
     set_lastest_unit();
-    for (int i = 0; i < 10; i++) {
-        printf("authenticated: %d : %d : %d : %d : %d : %d. \n",
-            authenticated_units[i].byte[0],
-            authenticated_units[i].byte[1],
-            authenticated_units[i].byte[2],
-            authenticated_units[i].byte[3],
-            authenticated_units[i].byte[4],
-            authenticated_units[i].byte[5]
-        );
-    }
-    printf("lastest: % d : % d : % d : % d : % d : % d. \n",
-        lastest_bluetooth_unit.byte[0],
-        lastest_bluetooth_unit.byte[1],
-        lastest_bluetooth_unit.byte[2],
-        lastest_bluetooth_unit.byte[3],
-        lastest_bluetooth_unit.byte[4],
-        lastest_bluetooth_unit.byte[5]
-    );
     for (size_t i = 0; i < sizeof(authenticated_units) / sizeof(authenticated_units[0]); i++) {
         if (authenticated_units[i].byte[0] == lastest_bluetooth_unit.byte[0] &&
             authenticated_units[i].byte[1] == lastest_bluetooth_unit.byte[1] &&
@@ -167,11 +132,6 @@ bool is_authenticated() {
     }
     return false;
 }
-
-//TODO: if not authenticated nor auth_button_pressed, force a disconnect (v)
-//TODO: Setup ESP32 Device and its wires (x)
-//TODO: Set light (x)
-//TODO: Test and Debug (x)
 
 /*--------------------------------------------------*/
 
@@ -211,7 +171,7 @@ void opened() {
 }
 
 void func_unlocking() {
-    if (unlock_timer == 10 && !is_opened && !is_authenticated()) {
+    if (unlock_timer == 10 && !is_opened) {
         state = LOCKED;
     } else if (unlock_timer < 10 && !is_opened && is_authenticated()) {
         is_alarm = false;
