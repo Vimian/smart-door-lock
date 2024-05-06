@@ -165,7 +165,7 @@ void opened() {
 void func_unlocking() {
     if (unlock_timer == 10 && !is_opened) {
         state = LOCKED;
-    } else if (unlock_timer < 10 && !is_opened && is_authenticated()) {
+    } else if (unlock_timer < 10 && !is_opened) {
         is_alarm = false;
         is_locked = false;
         state = UNLOCKED;
@@ -322,7 +322,7 @@ void esp_bt_gap_cb(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t *param) {
                 bt_connected = false;
             }
 
-            if (is_locked && !unlocking && !manual_lock) {
+            if (is_locked && !unlocking && !manual_lock && is_authenticated()) {
                 unlocking = true;
                 unlock_timer = 0;
             }
