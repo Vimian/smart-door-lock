@@ -141,6 +141,7 @@ struct gatts_profile_inst {
     esp_bt_uuid_t descr_uuid;
 };
 
+bool manual_lock = false;
 
 void initial() {
     if (is_locked && !is_opened) {
@@ -238,9 +239,11 @@ void listen_to_buttons (void *pvParameters) {
             if (is_locked) {
                 unlocking = true;
                 unlock_timer = 0;
+                manual_lock = false;
             } else {
                 locking = true;
                 is_locked = true;
+                manual_lock = true;
             }
         } else if (gpio_get_level(PIN_LOCK) == 1 && lock_button) {
             lock_button = false;
@@ -382,7 +385,7 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
 
                 bt_connected = true;
 
-                if (is_locked && !unlocking) {
+                if (is_locked && !unlocking && !manual_lock) {
                     unlocking = true;
                     unlock_timer = 0;
             
