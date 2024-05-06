@@ -69,17 +69,6 @@ int auth_iterator = 0;
 Bluetooth_address lastest_bluetooth_unit;
 
 //returns true if pressed and adds the unit to the authenticated_units array, false if not
-bool update_auth() {
-    if (gpio_get_level(PIN_AUTH) == 0) { //pressed
-        printf("Button is Pressed\n");
-        //Confirm button is pressed with light
-        auth_button_pressed = true;
-    }
-    else {
-        auth_button_pressed = false;
-    }
-    return false;
-}
 
 void set_lastest_unit() {
     lastest_bluetooth_unit.byte[0] = esp_bt_dev_get_address()[0];
@@ -258,6 +247,15 @@ void listen_to_buttons (void *pvParameters) {
             open_button = false;
         }
 
+        if (gpio_get_level(PIN_AUTH) == 0) { //pressed
+            printf("Button is Pressed\n");
+            //Confirm button is pressed with light
+            auth_button_pressed = true;
+        }
+        else {
+            auth_button_pressed = false;
+        }
+
         vTaskDelay(10);
     }
 }
@@ -432,7 +430,6 @@ void app_main(void) {
         esp_bluedroid_status_t status = esp_bluedroid_get_status();
         char bda_str[18] = {0};
         printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d, bt_connected: %d, bt_status: %d, ESP32_bt_addr: %s }\n", state, is_opened, is_locked, is_alarm, bt_connected, status, bda2str(esp_bt_dev_get_address(), bda_str, sizeof(bda_str)));
-        update_auth();
         switch (state) {
             case INITIAL:
                 initial();
