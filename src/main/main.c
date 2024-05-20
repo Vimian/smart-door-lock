@@ -352,8 +352,7 @@ void listen_to_buttons (void *pvParameters) {
     }
 }
 
-static void gatts_profile_event_handler(esp_gatts_cb_event_t event,
-					esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param);
+static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param);
 
 /* One gatt-based profile one app_id and one gatts_if, this array will store the gatts_if returned by ESP_GATTS_REG_EVT */
 static struct gatts_profile_inst heart_rate_profile_tab[PROFILE_NUM] = {
@@ -363,7 +362,7 @@ static struct gatts_profile_inst heart_rate_profile_tab[PROFILE_NUM] = {
     },
 };
 
-esp_bd_addr_t trusted_device;
+esp_bd_addr_t paired_device;
 bool paired = false;
 
 
@@ -464,19 +463,32 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
             ESP_LOGI(BLE_TAG, "ESP_GATTS_CONNECT_EVT, conn_id = %d", param->connect.conn_id);
             /* start security connect with peer device when receive the connect event sent by the master */
             esp_ble_set_encryption(param->connect.remote_bda, ESP_BLE_SEC_ENCRYPT_MITM);
-            memcpy(trusted_device, param->connect.remote_bda, sizeof(esp_bd_addr_t));
+            memcpy(paired_device, param->connect.remote_bda, sizeof(esp_bd_addr_t));
 
             if (paired == true) {
-
                 bt_connected = true;
 
-                if (is_locked && !unlocking && !manual_lock) {
+                if (add_to_auth()) {
+                    printf("Added to verified\n");
+                }
+                else {
+                    printf("Did not add to verified\n");
+                }
+                if (is_authenticated()) {
+                    printf("Authenticated\n");
+                }
+                else {
+                    printf("Did not Authenticate\n");
+                    bt_connected = false;
+                }
+
+                if (is_locked && !unlocking && !manual_lock && is_authenticated()) {
                     unlocking = true;
                     unlock_timer = 0;
-            
                 }
             }
             break;
+                
         case ESP_GATTS_DISCONNECT_EVT:
             ESP_LOGI(BLE_TAG, "ESP_GATTS_DISCONNECT_EVT, reason = %d", param->disconnect.reason);
             esp_ble_gap_start_advertising(&adv_params);
@@ -603,8 +615,6 @@ void app_main(void)
 
     setup_bt();
 
-    
-
     xTaskCreate(task_blink, "Blink", 4096, NULL, 1, NULL);
 
     xTaskCreate(listen_to_buttons, "Buttons", 4096, NULL, 1, NULL);
@@ -613,8 +623,6 @@ void app_main(void)
         esp_bluedroid_status_t status = esp_bluedroid_get_status();
         printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d, bt_connected: %d, bt_status: %d }\n", state, is_opened, is_locked, is_alarm, bt_connected, status);
 
-        char bda_str[18] = {0};
-        printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d, bt_connected: %d, bt_status: %d, ESP32_bt_addr: %s }\n", state, is_opened, is_locked, is_alarm, bt_connected, status, bda2str(esp_bt_dev_get_address(), bda_str, sizeof(bda_str)));
         switch (state) {
             case INITIAL:
                 initial();
