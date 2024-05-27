@@ -4,4 +4,26 @@
 [ Simon Spedsbjerg ] [ Author B ] [ Author C ] 
 \newline
 %Describe the solution, test, and evaluation results (note: remember to refer to what the video covers).
+%Simon's part
+\begin{comment}
 The solution provides the functionality of connecting with bluetooth to the ESP, if the bluetooth connection is recognized as a trusted device, it will allow the user to enter. While it is also possible to open up the door with the potentiometer in case that the bluetooth is unable to connect, the idea is that malfunctions could happen and the user would still need access to their house and or belongings. If it were the case that non of the intended methods to gain entry is used, the bluetooth connection and potentiometer, an alarm will be set of as it would then be considered a forced entry.
+\end{comment}
+%End of Simon's part
+
+Not all the ideas were implemented, and some will therefore be future work, along with some improvements.
+We prioritized having a working system, currently working is the state machine, 2fac and hardware, all of which are working for both versions of bluetooth.
+As mentioned in the previous section, does UPPAAL support testing and validation of the system, these all pass meaning R3 high level of trustworthiness is furfilled.
+Some manual tests were performed, by our group members and by another group during the presentation.
+From the tests, it can be concluded that the system meets the requirement R1 unlocking with a cellphone.
+The system also unlocks within 10 seconds which is R2.
+For the specific requirements, that we added.
+The current solution does not implement multiple devices, since this were prioritized less then other requirements.
+The 2FA works, only allowing devices to be trusted, if the button is pressed, which is R5.
+An other key feature is the manual override, so the phone does not accesdently come in range of the system while at sleep, this works, which is R6.
+The securing against bruteforce is not implemented, which is R7.
+
+\subsubsection{Future Work}
+We did not have time to implement the bruteforce detection, which should deffenetly be the next thing implemented. Another feature which also should be soon implemented is the allowing of multiple devices to be trusted.
+
+Some less important but nice to have features would be an application for Apple devices, so they could also take advantage of Bluetooth classic.
+Or if possible to get a trusted range of MAC addresses from Apple, so the system could be used without needing an application for first time pairing.
