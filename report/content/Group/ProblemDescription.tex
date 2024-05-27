@@ -1,9 +1,11 @@
 \subsection{Problem Description}
 [ IoT ] [ Course B ] [ Course C ] 
 \newline
-[ Phu ] [ Casper ] [ Author C ] 
+[ Casper ] [ Phu ] [ Simon ] 
 \newline
 %Provide a more detailed problem description here. What is the problem about? Characterize the problem in a way that allows for deriving a solution.
+
+%I think this is PHU's part
 \begin{comment}
 The IOT device in this case, ESP, is the chosen hardware used to connect the Smart door to the network it should support the Functional and non-functional requirements given in the case, The system is also based on SSAV course, that requires UPPAAL Diagrams to show the difference locations and atomic positions the state-machine can traverse. 
 \begin{table}[]
@@ -26,35 +28,88 @@ The IOT device in this case, ESP, is the chosen hardware used to connect the Sma
 
 These requirements as stated from the case Aswell as some features for us to implement such as through WiFi or Bluetooth these are some of the possible ways for ESP connectivity.
 \end{comment}
+%End of PHU's part
 
-%New thing
+When designing a smart door lock, there are several ways of going about it.
+To limit the scope of the project, some requirements were given in the case.
+
 \subsubsection{Requirements}
-Some requirements were given in the case, and from those, an idea will be chosen, which there later on will be added more requirements specifically tailored to the idea. The requirements from the case are the following.
+The given requirements were analyzed, and from those, an idea were chosen, which there later on in the report will be added more requirements to, specifically tailored to the idea.
+The requirements from the case are the following.
+\newline
 
 R1: Cellphone should be used to unlock the door.
+
 R2: The door should unlock within 10 seconds or not at all.
+
 R3: The system should have a high level of trustworthiness.
 
 \subsubsection{Ideas}
-From the requirements some solutions were arrived at mainly differing in the communication channel and ease of use for the user. The requirements are the following.
+From these requirements some solutions were arrived at, mainly differing in the communication channel and ease of use for the user.
+The ideas are the following:
 
-Using Bluetooth as the communication channel.
+\subsubsubsection{Bluetooth as the communication channel}
 
-Idea 1: The door should unlock when seeing a paired device nearby. This requires no additional input from the user, you would just walk up to the door and once you reach the door, the smart lock would most likely already have unlocked the door. Before a device can be used to open the door it needs to be paired with the ESP32, which allows for multiple devices to be able to unlock the same door.
+Idea 1: The door should unlock when seeing a trusted device nearby.
+This requires no additional input from the user, the scenario would be. The user would just walk up to the door and once the door is reached.
+The smart door lock would most likely already have unlocked the door, depending on the signal strengh.
+Before a device can be used to open the door it needs to be trusted by the smart door lock.
 
-Idea 2: The use of a mobile application, where the user would still approach the door like Idea 1, but then have to take out the phone, unlock the phone, find the application and send the unlock event, just to open the door. The security for this idea would be similar to the first where only paired devices would be allowed to send events to the door.
+Idea 2: Using a mobile application, here the user would still approach the door like Idea 1, but then have to perform multiple actions.
+\newline
 
-Another approach is to use WiFi instead as the communication channel.
+1. Take out their phone
 
-Idea 3: Using the ESP32 as an access point (AP), and then having the same flow as with idea 1 where the ESP32 detects trusted devices and unlocks and locks based on that. The main difference from idea 1 is that the phone will auto connect to a WiFi which will conflict with home WiFi, meaning that when the user approaches the door if the phone connects to the ESP32’s AP the user will then have to manually which to the home WiFi afterwards to connect to the internet. The other scenario is where the phone connects to the home WiFi the user will like in idea 2 have to take out the phone and perform some actions and connect back to the home WiFi.
+2. Unlock the phone
 
-Idea 4: Is about limiting the switch between Wifi networks and then getting the list of connected devices directly from the home router, which would require some way of getting the list of connected devices from the router. This would have the same user flow as an idea 1. Since it is a home that is being secured, additional any of the previous ideas could be extended with more points of verification, such as face recognition, fingerprint or others.
+3. Locate and open the application
+
+4. Send the unlock event
+
+All of this just to open the door.
+The security for this idea would be similar to idea 1, where only trusted/paired devices, would be allowed to send events to the door. With that being said, would an attacker also need to guess the unlock command for idea 2. This makes is arguably a little more secure than idea 1.
+
+\subsubsubsection{WiFi as the communication channel}
+Another way of going about this is using WiFi as the communication channel.
+These ideas are building upon the smart door lock acting as an access point (AP) that phones can connect to, or that the smart door lock connects to the home WiFi and can fetch information from it.
+
+Idea 3: Using the smart door lock as an AP, and then having the same flow as with idea 1, where it detects trusted devices and unlocks and locks based on that. With no further user interaction.
+The main difference from idea 1, is that the phone will auto connect to the hosted WiFi, which will conflict with home WiFi.
+Conflicting meaning that the phone will have to switch between the two WiFi networks, to unlock the door and to connect to the internet.
+A scenario could be the user approaches the door, if the phone connects to the smart door lock AP the door will unlock.
+Then to connect to the internet, the user will then have to manually which to the home WiFi afterwards to connect to the internet.
+This could also be the other way around they the user has to pull out the phone, connect to the smart door lock AP to unlock the door.
+This is very similar to idea 2, where there are a lot of steps the user has to take to unlock the door.
+
+Idea 4: Is about limiting the switching between Wifi networks.
+This could be done by getting the list of connected devices directly from the home router.
+Requiring some way of getting the list of connected devices from the router.
+This would have the same user flow as an idea 1 with few steps for the user to perform.
+
+Since it is a home that is being secured, additional any of the previous ideas could be extended with more points of verification, such as face recognition, fingerprint or other steps the user would have to perform.
 
 \subsubsection{Solution}
-For this project idea 1 was chosen due to the ease of use for the user. This idea is less secure compared to the others when it comes to bruteforce, as the intruder only needs to bruteforce one of the trusted devices Media Access Control (MAC) addresses. Along with the requirement for securing this some other specifical requirements are added, these are the following.
+For this project simplicity were chosen as the main factor, the user should have a reason to use the solution instead of a traditional lock.
+It could therefore not be more time consuming to unlock the door, than it would be to use a traditional lock.
+
+The choice is between idea 1 and idea 4, where idea 4 requires the user to have access to the home router.
+And also be able to give the smart door lock access to needed premissions, so it can access the client list.
+
+Idea 1 was chosen due to the ease of use for the user, and not requiring any further hardware.
+This idea as base is less secure compared to the others, specially when it comes to bruteforce, as the intruder only needs to bruteforce one of the trusted devices Media Access Control (MAC) addresses.
+Along with the given requirement, some new will be added to make it more secure and more userfriendly.
+\newline
 
 R4: Allow pairing of multiple devices.
-R5: 2FA for pairing devices. (pin and physical access to the ESP32)
-R6: Allow for locking with a key while paired devices are nearby.
 
-R4 is to allow multiple users in the same home, like a family. R5 is to prevent bruteforce of the pairing pin. R6 allows the user to lock the door etc. at night without having to turn off Bluetooth on the phone.
+R5: 2FA for pairing devices. (pin and physical access to the ESP32)
+
+R6: Allow for override locking with a traditional key.
+
+R7: Secure against bruteforce.
+\newline
+
+R4 is to allow multiple users in the same home, like a family to all be able to unlock the door quick.
+R5 is to prevent bruteforce of the pairing pincode, to trust new devices.
+R6 allows the user to lock the door, such as at night without having to turn off Bluetooth on the phone.
+R7 is to prevent bruteforce of the MAC address of the trusted devices.
