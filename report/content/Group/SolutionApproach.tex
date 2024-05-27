@@ -1,9 +1,12 @@
 \subsection{Solution Approach}
-[ Course A ] [ Course B ] [ Course C ] 
+[ SSaV ] [ MDSD ] [ IoT ] 
 \newline
-[ Simon Spedsbjerg] [ Dinh Phu Luu ] [ Author C ] 
+[ Casper ] [ Phu ] [ Simon ]
 \newline
 %Describe the solution approach on a high-level including advantages and drawbacks based on relevant literature.
+
+%I think this is Simon's part, maybe also Phu's???
+\begin{comment}
 The Smart door design is split into the hardware actuators and sensors, and the sofware that connects and gives logic and connects them together. For the hardware to work it must have a software that supports it for our requirements for the system to work. 
 
 The hardware design is split up into 3 components, buttons, Bluetooth and LED.  First for the basic functionality, such as unlocking and locking using the buttons and other potential component such as potenti-o-meter. Second being bluetooth, here several protocols exists. There is SPP which allows for sending commands, but it has been deprecated1. There is GATT2 which allows for 1-1 communications and stops advertising as soon as it has a connection. It requires BLE which some older phones may not be able to run. There is BLE itself which is a more modern version of bluetooth and better in most regards, especilally when it comes to power consumption3. But is not backward compatible with classic, which will lower potential users. Bluetooth classic which often used for music transfer3 has the advantage of being older and thereby more devices run it. While having the features required the group chose this, while the drawback being increased power consumption, having more potential customers is more valued. And lastly the LED to show shift in colors to show the current state is changed for the statemachince.
@@ -15,4 +18,65 @@ To create design for the Statemachine, UPPAAL is a software used to show the dif
 1 https://www.bluetooth.com/specifications/specs/serial-port-profile-1-1/\\
 2 https://learn.adafruit.com/introduction-to-bluetooth-low-energy/gatt\\
 3 https://www.bluetooth.com/learn-about-bluetooth/tech-overview/\\
- 
+\end{comment}
+%End of Simon's and maybe Phu's part
+
+Before designing the smart door lock, some more limitations were set.
+For the hardware only the kit from IOT course were made available.
+The kit contains an ESP32, a breadboard, a potentiometer, a button, a LED.
+Each group member were given a kit, so 3 times the amount of components were available.
+The system has to be trustworthy, which were tought in the course SSAV, through verification and validation using UPPAAL.
+UPPAAL is used to test state machines, so the system must be designed as a state machine.
+
+\subsubsection{Design}
+
+There are multiple parts to the system, the state machine, handling bluetooth, 2fac authentication, detect bruteforce, and the hardware.
+
+\subsubsubsection{State Machine}
+
+The state machine is designed in UPPAAL were it is tested before being converted to C code.
+The UPPAAL models are shown in the appendix \ref{app:UPPAALModels}.
+The validation tests show that the system is functioning as intended.
+These are shown in the appendix \ref{app:ValidationTests}.
+
+\subsubsubsection{Bluetooth}
+
+The ESP32 is a newer model and supports both Bluetooth classic and Bluetooth Low Energy (BLE).
+Because ESP32 in this case is chosen to run of a direct powerline, the power consumption is not a big issue.
+From the IoT course, it is taught that Bluetooth classic is superior and with the 10 second requirement, we would like to optimise as much as possible, allowing for drawbacks elsewere.
+What was later learned was that Apple devices filters out some Bluetooth classic devices in the default settings.
+This means that either the smart door lock would have to use BLE, or the users using an Apple device, would have to pair their device the first time, through an application.
+Apple devices still supports Bluetooth classic, but they filter them out.
+Developing a more finished product, it could also be assumed, that a range of MAC addresses could be trusted by Apple, which is mostlikely what they are during.
+In this project it were chosen to develop two versions of the smart door lock, one using BLE and one using Bluetooth classic.
+The Bluetooth classic as the main version, and the BLE version to support Apple devices.
+The BLE version will therefore not have the 10 second unlock requirement tested.
+
+The ESP32 will scan for devices nearby, and if a trusted device is found, the door will unlock.
+Given that the manual override is not active.
+
+\subsubsubsection{2fac Authentication}
+
+The concept of 2fac is to show proof of two different authentications.
+The pincode required is a show of knowledge and the second should therefore not be of the same type.
+The second authentication is chosen to be proof of access, which will be done through physical access.
+The user will need to have physical to a button on the device a long with the pincode to trust new devices.
+
+\subsubsubsection{Detect Bruteforce}
+
+In the elective course EMLI, the concept of fail2ban were taught.
+This concept is used to detect bruteforce attacks on a device, and then protect the system without given the knowledge to the attacker.
+In this case it will have lots of moving parts, since a device does not connect to the system, to unlock the door.
+Firstly a whitelist will be used to allow nearby devices to have bluetooth active without being trusted.
+The ESP32 will then have to figure out when a device need to be added to the whitelist, like a tv, a computer, or an iPad.
+The ESP32 will then be scanning for devices as usual, but if it sees x amount of not trusted or whitelisted devices in a given timeframe.
+The ESP32 will assume someone is trying to bruteforce the MAC of a trusted device, and it should then not unlock even if it sees a trusted device.
+This meaning that the entruider has come accross the MAC of a trusted device.
+The ESP32 will then reset the state after it detects the entruider has given up or it could require the traditional key to reset the system.
+
+\subsubsubsection{Hardware}
+
+The available hardware does not contain a physical lock, so a mucked lock will be used.
+The three buttons will be used for input, two of them as toggles, open/close and manual lock/unlock.
+The third button will be used for 2fac proof of access.
+The LED will be used to show the current state of the system visually, with the three available colors it gives a total of 10 states which can be represented, counting the turned off state.
