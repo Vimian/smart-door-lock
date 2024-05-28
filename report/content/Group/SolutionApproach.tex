@@ -32,14 +32,14 @@ UPPAAL is used to test state machines, so the system must be designed as a state
 
 There are multiple parts to the system, the state machine, handling bluetooth, 2fac authentication, detect bruteforce, and the hardware.
 
-\subsubsubsection{State Machine}
+\textbf{State Machine}
 
 The state machine is designed in UPPAAL were it is tested before being converted to C code.
 The UPPAAL models are shown in the appendix \ref{app:UPPAALModels}.
 The validation tests show that the system is functioning as intended.
 These are shown in the appendix \ref{app:ValidationTests}.
 
-\subsubsubsection{Bluetooth}
+\textbf{Bluetooth}
 
 The ESP32 is a newer model and supports both Bluetooth classic and Bluetooth Low Energy (BLE).
 Because ESP32 in this case is chosen to run of a direct powerline, the power consumption is not a big issue.
@@ -55,14 +55,14 @@ The BLE version will therefore not have the 10 second unlock requirement tested.
 The ESP32 will scan for devices nearby, and if a trusted device is found, the door will unlock.
 Given that the manual override is not active.
 
-\subsubsubsection{2fac Authentication}
+\textbf{2fac Authentication}
 
 The concept of 2fac is to show proof of two different authentications.
 The pincode required is a show of knowledge and the second should therefore not be of the same type.
 The second authentication is chosen to be proof of access, which will be done through physical access.
 The user will need to have physical to a button on the device a long with the pincode to trust new devices.
 
-\subsubsubsection{Detect Bruteforce}
+\textbf{Detect Bruteforce}
 
 In the elective course EMLI, the concept of fail2ban were taught.
 This concept is used to detect bruteforce attacks on a device, and then protect the system without given the knowledge to the attacker.
@@ -74,7 +74,7 @@ The ESP32 will assume someone is trying to bruteforce the MAC of a trusted devic
 This meaning that the entruider has come accross the MAC of a trusted device.
 The ESP32 will then reset the state after it detects the entruider has given up or it could require the traditional key to reset the system.
 
-\subsubsubsection{Hardware}
+\textbf{Hardware}
 
 The available hardware does not contain a physical lock, so a mucked lock will be used.
 The three buttons will be used for input, two of them as toggles, open/close and manual lock/unlock.
