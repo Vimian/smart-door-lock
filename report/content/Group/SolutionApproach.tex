@@ -50,7 +50,7 @@ Apple devices still supports Bluetooth classic, but they filter out some devices
 Developing a more finished product, it could also be assumed, that a range of Bluetooth MAC addresses could be trusted by Apple, which is mostlikely what they are during.
 In this project it were chosen to develop two versions of the smart door lock, one using BLE and one using Bluetooth classic.
 The Bluetooth classic as the main version, and the BLE version to support Apple devices.
-The BLE version will therefore not have the 10 second unlock requirement tested.
+The BLE version will therefore not have to meet the 10 second unlock requirement, for this project to be considered a success, only the faster Bluetooth classic version will guarantee it.
 
 The ESP32 will scan for devices nearby, and if a trusted device is found, the door will unlock.
 Given that the manual override is not active.
