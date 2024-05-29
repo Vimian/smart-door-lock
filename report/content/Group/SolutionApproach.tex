@@ -24,45 +24,45 @@ To create design for the Statemachine, UPPAAL is a software used to show the dif
 Before designing the smart door lock, some more limitations were set.
 For the hardware only the kit from IOT course were made available.
 The kit contains an ESP32, a breadboard, a potentiometer, a button, a LED.
-Each group member were given a kit, so 3 times the amount of components were available.
-The system has to be trustworthy, which were tought in the course SSAV, through verification and validation using UPPAAL.
+Each group member were given a kit, so three times the amount of components were available.
+The system has to be trustworthy, which were taught in the course SSAV, through verification and validation using UPPAAL.
 UPPAAL is used to test state machines, so the system must be designed as a state machine.
 
 \subsubsection{Design}
 
 There are multiple parts to the system, the state machine, handling bluetooth, 2fac authentication, detect bruteforce, and the hardware.
 
-\subsubsubsection{State Machine}
+\textbf{State Machine}
 
 The state machine is designed in UPPAAL were it is tested before being converted to C code.
 The UPPAAL models are shown in the appendix \ref{app:UPPAALModels}.
 The validation tests show that the system is functioning as intended.
 These are shown in the appendix \ref{app:ValidationTests}.
 
-\subsubsubsection{Bluetooth}
+\textbf{Bluetooth}
 
 The ESP32 is a newer model and supports both Bluetooth classic and Bluetooth Low Energy (BLE).
 Because ESP32 in this case is chosen to run of a direct powerline, the power consumption is not a big issue.
-From the IoT course, it is taught that Bluetooth classic is superior and with the 10 second requirement, we would like to optimise as much as possible, allowing for drawbacks elsewere.
+From the IoT course, it is taught that Bluetooth classic is superior and with the 10 second requirement, we would like to optimize as much as possible, allowing for drawbacks elsewhere.
 What was later learned was that Apple devices filters out some Bluetooth classic devices in the default settings.
 This means that either the smart door lock would have to use BLE, or the users using an Apple device, would have to pair their device the first time, through an application.
-Apple devices still supports Bluetooth classic, but they filter them out.
-Developing a more finished product, it could also be assumed, that a range of MAC addresses could be trusted by Apple, which is mostlikely what they are during.
+Apple devices still supports Bluetooth classic, but they filter out some devices.
+Developing a more finished product, it could also be assumed, that a range of Bluetooth MAC addresses could be trusted by Apple, which is most likely what they are during.
 In this project it were chosen to develop two versions of the smart door lock, one using BLE and one using Bluetooth classic.
 The Bluetooth classic as the main version, and the BLE version to support Apple devices.
-The BLE version will therefore not have the 10 second unlock requirement tested.
+The BLE version will therefore not have to meet the 10 second unlock requirement, for this project to be considered a success, only the faster Bluetooth classic version will guarantee it.
 
 The ESP32 will scan for devices nearby, and if a trusted device is found, the door will unlock.
 Given that the manual override is not active.
 
-\subsubsubsection{2fac Authentication}
+\textbf{2fac Authentication}
 
 The concept of 2fac is to show proof of two different authentications.
 The pincode required is a show of knowledge and the second should therefore not be of the same type.
 The second authentication is chosen to be proof of access, which will be done through physical access.
 The user will need to have physical to a button on the device a long with the pincode to trust new devices.
 
-\subsubsubsection{Detect Bruteforce}
+\textbf{Detect Bruteforce}
 
 In the elective course EMLI, the concept of fail2ban were taught.
 This concept is used to detect bruteforce attacks on a device, and then protect the system without given the knowledge to the attacker.
@@ -71,10 +71,10 @@ Firstly a whitelist will be used to allow nearby devices to have bluetooth activ
 The ESP32 will then have to figure out when a device need to be added to the whitelist, like a tv, a computer, or an iPad.
 The ESP32 will then be scanning for devices as usual, but if it sees x amount of not trusted or whitelisted devices in a given timeframe.
 The ESP32 will assume someone is trying to bruteforce the MAC of a trusted device, and it should then not unlock even if it sees a trusted device.
-This meaning that the entruider has come accross the MAC of a trusted device.
-The ESP32 will then reset the state after it detects the entruider has given up or it could require the traditional key to reset the system.
+This meaning that the intruder has come across the MAC of a trusted device.
+The ESP32 will then reset the state after it detects the intruder has given up or it could require the traditional key to reset the system.
 
-\subsubsubsection{Hardware}
+\textbf{Hardware}
 
 The available hardware does not contain a physical lock, so a mucked lock will be used.
 The three buttons will be used for input, two of them as toggles, open/close and manual lock/unlock.
