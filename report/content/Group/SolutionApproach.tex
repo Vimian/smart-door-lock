@@ -44,9 +44,9 @@ These are shown in the appendix \ref{app:ValidationTests}.
 The ESP32 is a newer model and supports both Bluetooth classic and Bluetooth Low Energy (BLE).
 Because ESP32 in this case is chosen to run of a direct powerline, the power consumption is not a big issue.
 From the IoT course, it is taught that Bluetooth classic is superior and with the 10 second requirement, we would like to optimise as much as possible, allowing for drawbacks elsewere.
-What was later learned was that Apple devices filters out some Bluetooth classic devices in the default settings.
+What was later learned, was that Apple devices filters out some Bluetooth classic devices in the default settings.
 This means that either the smart door lock would have to use BLE, or the users using an Apple device, would have to pair their device the first time, through an application.
-Apple devices still supports Bluetooth classic, but they filter them out.
+Apple devices still supports Bluetooth classic, but they filter out some devices.
 Developing a more finished product, it could also be assumed, that a range of MAC addresses could be trusted by Apple, which is mostlikely what they are during.
 In this project it were chosen to develop two versions of the smart door lock, one using BLE and one using Bluetooth classic.
 The Bluetooth classic as the main version, and the BLE version to support Apple devices.
