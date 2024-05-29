@@ -1,5 +1,7 @@
 \section*{Appendix}
 \appendix
+
+\begin{comment}
 Appendix: Put all Figures, Tables, Algorithms, etc., in appendix.
 
 \section{First Appendix}
@@ -19,6 +21,8 @@ Appendix: Put all Figures, Tables, Algorithms, etc., in appendix.
 \caption{Full width figure SDU Logo}
 \label{app:fig:SDULogoV2}
 \end{figure*}
+\end{comment}
+
 
 \section{UPPAAL Models}
 \label{app:UPPAALModels}
@@ -33,30 +37,28 @@ TODO: Add validation tests here
 \section{Wiring Diagram}
 \label{app:WiringDiagram}
 
-\begin{figure*}[tbh]
+\begin{figure}[tbh]
 \includegraphics[width=.95\textwidth]{./../circuit/circuit.png}
 \caption{Hardware wiring diagram}
 \label{app:fig:WiringDiagram}
-\end{figure*}
+\end{figure}
 
 \section{LED Colors}
 \label{app:LEDColors}
-\newline
-
 None - unlocked and closed
-
+\newline
 Green - locked and closed
-
+\newline
 red - unlocked and open
-
+\newline
 yellow - locked and open
-
+\newline
 yellow/white - locked, open and alarm
-
+\newline
 green/cyan - locked, closed and alarm
-
+\newline
 ! purple - unlocked, open and alarm
-
+\newline
 ! blue - alarm
-
+\newline
 ! are states that does not exist in the UPPAAL models.
