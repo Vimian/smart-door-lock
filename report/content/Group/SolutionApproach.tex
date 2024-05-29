@@ -43,11 +43,11 @@ These are shown in the appendix \ref{app:ValidationTests}.
 
 The ESP32 is a newer model and supports both Bluetooth classic and Bluetooth Low Energy (BLE).
 Because ESP32 in this case is chosen to run of a direct powerline, the power consumption is not a big issue.
-From the IoT course, it is taught that Bluetooth classic is superior and with the 10 second requirement, we would like to optimise as much as possible, allowing for drawbacks elsewere.
-What was later learned, was that Apple devices filters out some Bluetooth classic devices in the default settings.
+From the IoT course, it is taught that Bluetooth classic is superior and with the 10 second requirement, we would like to optimize as much as possible, allowing for drawbacks elsewhere.
+What was later learned was that Apple devices filters out some Bluetooth classic devices in the default settings.
 This means that either the smart door lock would have to use BLE, or the users using an Apple device, would have to pair their device the first time, through an application.
 Apple devices still supports Bluetooth classic, but they filter out some devices.
-Developing a more finished product, it could also be assumed, that a range of Bluetooth MAC addresses could be trusted by Apple, which is mostlikely what they are during.
+Developing a more finished product, it could also be assumed, that a range of Bluetooth MAC addresses could be trusted by Apple, which is most likely what they are during.
 In this project it were chosen to develop two versions of the smart door lock, one using BLE and one using Bluetooth classic.
 The Bluetooth classic as the main version, and the BLE version to support Apple devices.
 The BLE version will therefore not have to meet the 10 second unlock requirement, for this project to be considered a success, only the faster Bluetooth classic version will guarantee it.
@@ -71,8 +71,8 @@ Firstly a whitelist will be used to allow nearby devices to have bluetooth activ
 The ESP32 will then have to figure out when a device need to be added to the whitelist, like a tv, a computer, or an iPad.
 The ESP32 will then be scanning for devices as usual, but if it sees x amount of not trusted or whitelisted devices in a given timeframe.
 The ESP32 will assume someone is trying to bruteforce the MAC of a trusted device, and it should then not unlock even if it sees a trusted device.
-This meaning that the entruider has come accross the MAC of a trusted device.
-The ESP32 will then reset the state after it detects the entruider has given up or it could require the traditional key to reset the system.
+This meaning that the intruder has come across the MAC of a trusted device.
+The ESP32 will then reset the state after it detects the intruder has given up or it could require the traditional key to reset the system.
 
 \textbf{Hardware}
 
