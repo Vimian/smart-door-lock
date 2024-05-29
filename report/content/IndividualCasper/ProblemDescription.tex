@@ -3,14 +3,16 @@
 \newline
 %Provide a more detailed problem description here. What is the problem about? Characterize the problem in a way that allows for deriving a solution.
 
-The problem is to implement a state machine in C code, so it can be run on the ESP32.
-The other problem is to interact with the Bluetooth hardware of the ESP32 through code.
+%The problem is to implement a state machine in C code, so it can be run on the ESP32.
+%The other problem is to interact with the Bluetooth hardware of the ESP32 through code.
 
-There are some requirements for the system which limits the solutions to these problems.
-One of these being that the system must have a high level of trustworthiness, and must therefore act like the state machine in UPPAAL, which is proven to work by our tests.
-Implementing a state machine in code does not give anything functionality by itself.
-An interpreter is needed to run the state machine.
-% add something about the different states in the state machine
+There was given some requirements for the system which limits the scope of the design.
+One of these being that the system must have a high level of trustworthiness, and must therefore act like the state machine in UPPAAL, which is proven to work by our UPPAAL tests.
+UPPAAL does not allow for exporting the models to C code, so the state machine must be implemented manually.
+Implementing a state machine in code does not give anything functionality by itself, an interpreter is needed to interpret the state machine.
 
+Another requirement is that the system must be able to communicate with a cellphone, for which Bluetooth were chosen, in this individual report, the focus will be on implementing Bluetooth classic.
 The Bluetooth hardware of the ESP32 is not easily accessible from the C code.
-There had to be made some configurations and logic, to interact with the Bluetooth hardware.
+There has to be made some configurations and logic, to interact with the Bluetooth hardware.
+
+To showcase the system a muck-up of the smart door lock will be made, which demonstrates the functionality of the system, using the available components.
