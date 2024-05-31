@@ -4,11 +4,12 @@
 %Describe the solution, test, and evaluation results.
 
 Three problems were solved in this report, every problem was solved with a working solution, both tested internally and externally at the presentation day.
-From the results it can be concluded that the system meets the requirements.
+From the results, it can be concluded that the system meets the requirements.
 
-Something I would change if state machine was not copied directly from UPPAAL, would be use an other concept other than channels, to inject information into the state machine, from elsewhere.
-This could be done using events or others, I just fill like the concept of channels is a bit janky.
-The thing I don't like about channels is that they does not trigger anything directly, it just injects a value from the outside, which is not guarenteed to be used, in the current state.
+Something I would change if the state machine was not copied directly from UPPAAL, would be to use another concept other than channels, to inject information into the state machine, from elsewhere.
+This could be done using events or others, I just feel like the concept of channels is a bit janky.
+The thing I don't like about channels is that they do not trigger anything directly or immediately, it just injects a value externally into some other thread.
+This value is at the quickest used in the next tick, but it is not guaranteed to be used or relevant, in the current state.
 
 For future work regarding the three things that I worked on.
-I would like to see the code run, controll and get input from a real lock and door.
+I would like to see the code run, control and get input from a real lock and door.
