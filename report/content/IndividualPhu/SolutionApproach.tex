@@ -1,4 +1,9 @@
 \subsection{Solution Approach}
-[ Course A ] [ Course B ] [ Course C ] 
+[ IOT ] [ SSAV ] 
 \newline
-Describe the solution approach on a high-level including advantages and drawbacks based on relevant literature.
+\subsubsection{\textbf{Approach}}
+ Implementing Bluetooth has different protocols I can choose from,  the simple Serial Port Protocol which allows for sending shell commands would be useful in this case, but it has been deprecated for some time. Then there is GATT \cite{BluetoothTechnologyWebsite_2023} or generic Attribute profile, which is used for \gls{ble} profiles. It uses \gls{ble} which only newer model phones can use making it not backwards compatible and rendering it useless for old models, however, for controlling a "smart" door locks it would make sense to use a "smart" phone. \gls{ble} is known for its low energy consumption because it automatically turns off the Radio Frequency module when there aren't any data transferrable. The Throughput of data transfer is directly proportional to the power consumption, thereby making it less viable for scaling performance 
+ \cite{Tosi_Taffoni_Santacatterina_Sannino_Formica_2017}.
+ 
+ Using GATT and SPP in tandem is the common standard practice when it comes to \gls{ble} implementations, which doesn't require licensing. 
+ 

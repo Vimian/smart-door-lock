@@ -1,4 +1,51 @@
 \subsection{Solution Approach}
-[ Course A ] [ Course B ] [ Course C ] 
+[ SSaV ] [ MDSD ] [ IoT ] 
 \newline
 %Describe the solution approach on a high-level including advantages and drawbacks based on relevant literature.
+
+Three problems were identified in this report.
+The first being the implementation of a state machine in C code, the second being the interaction with the Bluetooth hardware of the ESP32 through code.
+The third is to showcase the system using the available components.
+
+\subsubsection{State Machine Implementation}
+The state machine was already done by the whole group in UPPAAL.
+Different states were defined which can be seen in appendix \ref{app:UPPAALModels}.
+Converting the models to C code was done by implementing a function for each state in the UPPAAL models, with their guards and invariants as if statements, and the states which could be transitioned to, from the current state.
+
+To use this logic, an interpreter was implemented.
+It works by saving the current state, and for each tick, it will call the matching function for the current state.
+If a guard is true or an invariant is false, it will transition to the next state, which is then saved as the current state, and will be processed instead in the next tick.
+
+\subsubsection{Bluetooth Classic}
+The ESP32 has a Bluetooth module, which can be used to communicate with other devices.
+This module is offline by default, and some configurations are needed to use it.
+The ESP32 can only use one Bluetooth protocol at a time, which is why two versions were developed, to support a wider range of devices.
+After configuring the Bluetooth module, other Bluetooth Classic settings and Bluetooth Generic Access Profile (GAP), the ESP32 is then advertising itself, for other devices to see.
+GAP is a protocol that defines how two Bluetooth devices discover and connect to each other.
+Next is handling the connections, everything with GAP is event based, so for each action being done, an event is triggered.
+Many of these events are irrelevant for this project, the only four events that are used are the following:
+\newline
+
+1. Unpaired device is trying to pair or has successfully paired.
+
+2. Check if the pincode is correct.
+
+3. Paired device connected or found.
+
+4. Paired device disconnected or out of reach.
+\newline
+
+The logic implemented for these events is that new devices when successfully paired, will be added as a trusted device.
+This will Simon later build upon by adding 2fac to the process.
+The other logic is that when a paired device connects or is located, a channel will be active, which will let the state machine know in the next tick, that the device is connected.
+The state machine's logic will then try to unlock the door.
+If the device is disconnected, another channel will open which tells the state machine that the device is no longer in range.
+The same goes for each button press, a unique channel will be opened letting the state machine know which button was pressed.
+
+\subsubsection{Showcase}
+The muck-up uses a combination of buttons, resistors, and a LED to simulate the door and lock, a wiring diagram can be seen in appendix \ref{app:WiringDiagram} figure \ref{app:fig:WiringDiagram}.
+The LED can make a total of 10 different colors if powered off is included,  these will be used to show the state of the system.
+A list of the colors and their corresponding states can be seen in appendix \ref{app:LEDColors}.
+Multiple times for each tick the code will on a seperate thread, match the current state, with the GPIO of the three pins of the LED, and light up the corresponding color.
+
+Handling of Bluetooth, buttons, and the LED is done in separate threads, to not block the main thread, which is running the state machine.

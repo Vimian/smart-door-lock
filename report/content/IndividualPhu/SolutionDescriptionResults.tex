@@ -1,4 +1,19 @@
 \subsection{Solution Description and Results}
-[ Course A ] [ Course B ] [ Course C ] 
+[ IOT ] [ SSAV ] 
 \newline
-Describe the solution, test, and evaluation results.
+\subsubsection{\textbf{Solution description}}
+ I have set to use the \gls{ble} framework to work with both iPhone and Android models. The first step in finding a solution for implementing \gls{ble} features to the ESP32 was to find documentation and the first source I took from was the ESP-IDF's website. I found the different libraries such as esp\_gap\_ble\_api.h that contain all the possible bluedroid events and event handlers necessary for the \gls{ble} to be compile-able in C. With this I can implement \gls{ble} with GATT-SPP it needs a few more prerequisites than Bluetooth Classic, like a GATT Profile handler that handles specific data for advertising events this is because the Serial port profile (SPP) is not specified for \gls{ble}, whereas in classic it is defined. The GATT/SPP would also require the response data between the 3-way handshake of the device and phone.
+ 
+ Bluetooth is event-driven so for the event processing the callback function for the gap event handler is used to capture any of the events to start and stop advertising data or for the device to scan and connect. This way it is structured is that the different events are enumerated and the way I have implemented utilizes by invoking these enums with switch cases, thereby I can implement the smart door lock to switch the states in order of these events occurring. In The Classic implementation, the device only utilizes GAP to connect however, due to the encryption and data transfer, \gls{ble} requires GATT, to handle Profile data transactions as well for advertising and scan response data \cite{ESPBLEGAP}. I have implemented the same as classic Bluetooth but when the device starts advertising and a user successfully pairs to the ESP32, it stops advertising. Then it calls unlock to Switch the current locked state to an unlocked state, and as soon as it disconnects it should lock again and start advertising. 
+
+For the ESP32 to set up with the correct \gls{ble} configuration, I have to set the BR/EDR to \gls{ble} only because the Dual-mode ESP is no longer supported \cite{esp32beans}, either manually with IDF menuconfig or with the "sdkconfig.default". 
+
+\subsubsection{\textbf{Results}} 
+\gls{ble} now works for Apple products like the iPhone, but only with apps like light-blue that allow for scanning nearby \gls{ble} devices, and can pair with authentication being a password.
+
+All the functionality and features set forth are currently working, 2fac pairing where only pressing the button allows the device to unlock and become a trusted device instead of a connected device only, the manual override physical button to unlock and lock the door, and LED that represents the different states for the Smart door lock, and button implementation, however, what differs from our classic version is that it stops advertising when a device is connected, and automatically starts when the device disconnects.
+
+Currently, I have only conducted a manual test to test if the features work, but not for all edge cases, it currently takes at most 4-5 seconds for a change in lights, but it is in reality milliseconds to change the states in the serial monitor logs. For SSAV the verification of the model is passing based on the case requirements that we translated into the UPPALL verification syntax. based on our functional requirement F2 of "The door should unlock within 10 seconds or not at all", we can validate the model and manually test that it meets our specified limit. 
+
+\subsubsection{\textbf{future works}} 
+If there is more time to develop, it is to make it more viable with some automated test, instead of manually testing the system with some e2e or unit test. With even more time I could implement having multiple phones be connected at the same time, however, we chose not to because simplicity of the use case, that the user only has to connect, and the lock should unlock.
