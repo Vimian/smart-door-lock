@@ -80,7 +80,7 @@ void set_lastest_unit() {
 }
 
 bool add_to_auth() {
-    if (gpio_get_level(PIN_AUTH) != 0) return false;
+    //if (gpio_get_level(PIN_AUTH) != 0) return false;
     set_lastest_unit();
     if (auth_button_pressed) {
         for (size_t i = 0; i < sizeof(authenticated_units) / sizeof(authenticated_units[0]); i++) {
@@ -403,7 +403,7 @@ void setup_bt() {
     esp_bt_dev_set_device_name("SmartDoorLock");
     esp_bt_gap_set_scan_mode(ESP_BT_CONNECTABLE, ESP_BT_GENERAL_DISCOVERABLE);
 }
-
+#include <time.h> 
 void app_main(void) {
     gpio_reset_pin(PIN_OPENED);
     gpio_set_direction(PIN_OPENED, GPIO_MODE_OUTPUT);
@@ -427,6 +427,13 @@ void app_main(void) {
     xTaskCreate(ping_device, "PingDevice", 4096, NULL, 1, NULL);
 
     while (1) {
+        
+        clock_t t; 
+        t = clock(); 
+        add_to_auth();
+        t = clock() - t; 
+        double time_taken = ((double)t)/CLOCKS_PER_SEC;
+        printf("fun() took %f seconds to execute \n", time_taken); 
         esp_bluedroid_status_t status = esp_bluedroid_get_status();
         char bda_str[18] = {0};
         printf("{ State is: %d, is_opened: %d, is_locked: %d, is_alarm: %d, bt_connected: %d, bt_status: %d, ESP32_bt_addr: %s }\n", state, is_opened, is_locked, is_alarm, bt_connected, status, bda2str(esp_bt_dev_get_address(), bda_str, sizeof(bda_str)));
