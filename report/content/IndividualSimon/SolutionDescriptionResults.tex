@@ -2,4 +2,16 @@
 [ Course A ] [ Course B ] [ Course C ] 
 \newline
 Describe the solution, test, and evaluation results.
-First a verification model is created to ensure that the solution works theoretical(find bedre ord). Once the solution is validated with the test, implementation 
+\subsubsection{2 Factor Authentication}
+First a verification model is created to ensure that the solution works logically. Once the solution is validated with the test, implementation can proceed. It is important to ensure that the system works as intended, especially when it comes to the security part of the system. The model is modelled the same way it works in the code described in the following sections.
+\newline
+\textbf{Logging into the system}\newline
+A Bluetooth address is defined by 48bits [https://www.bluetooth.com/bluetooth-resources/intro-to-bluetooth-beacons-copy/]. Once someone makes a connection to the system, we gather all of these bits in a struct which is set for latest unit. Latest unit will be compared to a list of verified Bluetooth address', if any match it will return true. This is done every time before it goes into an unlock state and the door cannot be opened without a physical key.
+\newline
+\textbf{Adding device to authenticated}\newline
+To lower the amount of verification checks performed, it will only perform a check after a connection has been established. If the button is pressed down during this period, the system will set the device as latest unit, and then iterate over each space in a list of verified devices, if the same device is already in there it will not add it to the list again, otherwise the new device will occupy the first free space in the list. The list has a max size, in this case it is 10, but could be altered for industrial preposes. Size is limited to not fill up space for potential future updates as once the system is in production, lowering the limit is problematic due to the possibility of removing otherwise existing users from authenticated list during an update.
+\newline
+\textbf{Verification}\newline
+The testing of the systems works as intended with no unforeseen consequences, the system authenticates by comparing 10 times 48bits and the compute time here is negligible. The adding a new device to a system is done in: (FIND AND SET TIME!)
+
+\subsubsection{Detection of Bruteforce}
