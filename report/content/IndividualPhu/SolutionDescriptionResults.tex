@@ -1,6 +1,5 @@
 \subsection{Solution Description and Results}
 [ IOT ] [ SSAV ] 
-\newline
 \subsubsection{\textbf{Solution description}}
  I have set to use the \gls{ble} framework to work with both iPhone and Android models. The first step in finding a solution for implementing \gls{ble} features to the ESP32 was to find documentation and the first source I took from was the ESP-IDF's website. I found the different libraries such as esp\_gap\_ble\_api.h that contain all the possible bluedroid events and event handlers necessary for the \gls{ble} to be compile-able in C. With this I can implement \gls{ble} with GATT-SPP it needs a few more prerequisites than Bluetooth Classic, like a GATT Profile handler that handles specific data for advertising events this is because the Serial port profile (SPP) is not specified for \gls{ble}, whereas in classic it is defined. The GATT/SPP would also require the response data between the 3-way handshake of the device and phone.
  
