@@ -1,6 +1,5 @@
 \subsection{Solution Description and Results}
 [ IOT ] [ SSAV ]
-\newline
 %Describe the solution, test, and evaluation results.
 \subsubsection{2 Factor-Authentication}
 First a verification model is created to ensure that the solution works logically. Once the solution is validated with tests, the implementation can proceed. It is important to ensure that the system works as intended, especially when it comes to the security part of the system. The model is modelled the same way it works in the code described in the following sections.
@@ -20,7 +19,7 @@ This feature did not reach an implementation phase nor did it get verified with 
 Operationally it would work something like the following, be aware, as this feature was about to leave analysis phase, it was not yet modelled in UPPAAL. The system would make a count after advertising was finished, if there were too many devices it would disallow unlocking, to unlock the user would either have to wait for a specified time or use a physical key. As the possible amount of bit combinations you can have is $2^{48}=2.8147*10^{14}$, then the amount of natural Bluetooth devices in an apartment complex would be lower than the max allowed devices nearby. If the limit was set to 1000 with wait of 5minutes between each attempt, then it would take an attacker up to 
 \begin{center}
 $attempts*1000=2^{48}$ : $attempts=56.294.995.342$ : $1,4*10^{12}minutes$
-\end{center}.
+\end{center}
 Once the system has detected too many devices nearby it would flip a boolean, start a timer and forcefully lock the door. At this point it would not be allowed to make any other operation until the timer has reached the specified value. This way we lower power consumption due to not making any operations other than checking the state of the door in case of break-in.
 
 As this feature was not finished, it is not possible to evaluate the solution and is put up for future work.
